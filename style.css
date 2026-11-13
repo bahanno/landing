@@ -391,3 +391,12 @@ footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255,
     color: var(--bg-color) !important;
     border-color: var(--text-main) !important;
 }
+
+/* Torongo Logo Size Override */
+.torongo-logo {
+    display: block !important;
+    margin: 0 auto 1rem auto !important;
+    max-width: 600px !important;
+    width: 80% !important;
+    filter: brightness(0) invert(1) !important; 
+}
