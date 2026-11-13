@@ -173,3 +173,126 @@ footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255,
 .torongo-hero .brand-name {
     font-size: clamp(3rem, 10vw, 7rem);
 }
+
+/* =========================================
+   Our Ecosystem & Torongo Card Styles
+   ========================================= */
+.ecosystem {
+    padding: 8rem 0;
+    position: relative;
+    z-index: 1;
+}
+
+.section-title {
+    text-align: center;
+    color: var(--text-main);
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 4rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.torongo-card {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #111218;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 4rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Dark red/brown subtle glow */
+.torongo-card::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(139, 0, 0, 0.15) 0%, rgba(10, 11, 16, 0) 60%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.torongo-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.torongo-logo {
+    display: block;
+    margin: 0 auto 1.5rem auto;
+    max-width: 150px;
+    min-height: 50px; /* So it doesn't collapse if image is missing */
+}
+
+.torongo-card h3 {
+    color: var(--text-main);
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.torongo-desc {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto 2.5rem auto;
+}
+
+.featured-release {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem 2rem;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.featured-release p {
+    color: var(--text-main);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+}
+
+.featured-release strong {
+    color: #fff;
+    font-weight: 600;
+}
+
+.ghost-btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.ghost-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .featured-release {
+        padding: 1rem;
+        width: 100%;
+        text-align: center;
+    }
+    .ghost-btn {
+        margin-top: 1rem;
+    }
+}
