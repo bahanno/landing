@@ -296,3 +296,9 @@ footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255,
         margin-top: 1rem;
     }
 }
+
+/* Torongo Logo Color & Transparency Fix for Dark Mode */
+.torongo-logo {
+    filter: invert(1) brightness(2);
+    mix-blend-mode: screen;
+}
