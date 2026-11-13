@@ -524,3 +524,19 @@ footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255,
     border-color: #fff !important;
     transform: translateY(-3px) !important;
 }
+
+/* --- Fix Logo Clipping --- */
+.torongo-logo-container {
+    height: auto !important;
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 280px !important; /* Adjust width for perfect balance */
+    margin-bottom: 1.5rem !important;
+    padding: 10px !important;
+}
+
+.torongo-logo {
+    width: 100% !important;
+    transform: scale(1.15) !important; /* Slight scale up without clipping */
+    filter: brightness(0) invert(1) !important;
+}
