@@ -228,7 +228,7 @@ footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255,
 .torongo-logo {
     display: block !important;
     margin: 0 auto 1.5rem auto !important;
-    max-width: 150px !important;
+    max-width: 320px !important;
     filter: brightness(0) invert(1) !important; /* যেকোনো ছবিকে সাদা করে দেবে */
 }
 
@@ -301,7 +301,7 @@ footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255,
 .torongo-logo {
     display: block !important;
     margin: 0 auto 1.5rem auto !important;
-    max-width: 150px !important;
+    max-width: 320px !important;
     filter: brightness(0) invert(1) !important; /* যেকোনো ছবিকে সাদা করে দেবে */
 }
 
@@ -360,7 +360,7 @@ footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255,
     align-items: center !important;
     background: rgba(255, 255, 255, 0.03) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    padding: 1.5rem 2rem !important;
+    padding: 1rem 2rem !important;
     border-radius: 8px !important;
     gap: 1rem !important;
 }
