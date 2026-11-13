@@ -226,10 +226,10 @@ footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255,
 }
 
 .torongo-logo {
-    display: block;
-    margin: 0 auto 1.5rem auto;
-    max-width: 150px;
-    min-height: 50px; /* So it doesn't collapse if image is missing */
+    display: block !important;
+    margin: 0 auto 1.5rem auto !important;
+    max-width: 150px !important;
+    filter: brightness(0) invert(1) !important; /* যেকোনো ছবিকে সাদা করে দেবে */
 }
 
 .torongo-card h3 {
@@ -299,6 +299,95 @@ footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255,
 
 /* Torongo Logo Color & Transparency Fix for Dark Mode */
 .torongo-logo {
-    filter: invert(1) brightness(2);
-    mix-blend-mode: screen;
+    display: block !important;
+    margin: 0 auto 1.5rem auto !important;
+    max-width: 150px !important;
+    filter: brightness(0) invert(1) !important; /* যেকোনো ছবিকে সাদা করে দেবে */
+}
+
+/* =========================================
+   ECOSYSTEM SECTION FIXES (Override)
+   ========================================= */
+.ecosystem {
+    text-align: center !important;
+    padding: 6rem 0 !important;
+}
+
+.section-title {
+    text-align: center !important;
+    color: var(--text-main) !important;
+    font-size: clamp(2rem, 5vw, 3rem) !important;
+    margin-bottom: 3rem !important;
+    font-weight: 600 !important;
+    display: block !important;
+    width: 100% !important;
+}
+
+.torongo-card {
+    max-width: 800px !important;
+    margin: 0 auto !important;
+    background: #111218 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 3rem 2rem !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 0 40px rgba(139, 0, 0, 0.2) !important; /* Subtle dark red glow */
+}
+
+.torongo-card h3 {
+    color: var(--text-main) !important;
+    font-size: 2rem !important;
+    margin-bottom: 1rem !important;
+    margin-top: 0 !important;
+}
+
+.torongo-desc {
+    color: var(--text-muted) !important;
+    font-size: 1.1rem !important;
+    max-width: 600px !important;
+    margin: 0 auto 2rem auto !important;
+    line-height: 1.6 !important;
+}
+
+.featured-release {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 1.5rem 2rem !important;
+    border-radius: 8px !important;
+    gap: 1rem !important;
+}
+
+.featured-release p {
+    color: var(--text-main) !important;
+    margin: 0 !important;
+    font-size: 1rem !important;
+}
+
+.ghost-btn {
+    display: inline-block !important;
+    padding: 0.8rem 1.5rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    border-radius: 4px !important;
+    color: var(--text-main) !important;
+    text-decoration: none !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    transition: all 0.3s ease !important;
+    background: transparent !important;
+}
+
+.ghost-btn:hover {
+    background: var(--text-main) !important;
+    color: var(--bg-color) !important;
+    border-color: var(--text-main) !important;
 }
