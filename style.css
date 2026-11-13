@@ -540,3 +540,16 @@ footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255,
     transform: scale(1.15) !important; /* Slight scale up without clipping */
     filter: brightness(0) invert(1) !important;
 }
+
+/* --- Torongo Text Logo Styling --- */
+.torongo-text-logo {
+    font-family: var(--font-logo) !important; /* Uses DISTGRG font */
+    font-size: clamp(3.5rem, 10vw, 6rem) !important;
+    color: var(--text-main) !important;
+    letter-spacing: 0.05em !important;
+    margin-bottom: 1.5rem !important;
+    line-height: 1 !important;
+    text-transform: uppercase !important;
+    /* Optional: subtle text glow to match the card */
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1) !important;
+}
