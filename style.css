@@ -400,3 +400,88 @@ footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255,
     width: 80% !important;
     filter: brightness(0) invert(1) !important; 
 }
+
+/* =========================================
+   ECOSYSTEM SECTION - PROFESSIONAL REDESIGN
+   ========================================= */
+.ecosystem {
+    padding: 6rem 0 !important;
+    text-align: center !important;
+}
+
+.torongo-card {
+    max-width: 700px !important;
+    margin: 0 auto !important;
+    background: linear-gradient(180deg, #111218 0%, #0A0B10 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    padding: 4rem 2rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Dark red/brown subtle glow */
+.torongo-card::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%; height: 150%;
+    background: radial-gradient(circle, rgba(139, 0, 0, 0.12) 0%, rgba(10, 11, 16, 0) 60%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Logo Container to crop whitespace */
+.torongo-logo-container {
+    z-index: 1;
+    width: 200px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.torongo-logo {
+    width: 100%;
+    transform: scale(2.2) !important; /* Zooms in to ignore image whitespace */
+    filter: brightness(0) invert(1) !important; /* Makes logo pure white */
+}
+
+.torongo-desc {
+    z-index: 1;
+    color: var(--text-muted) !important;
+    font-size: 1.1rem !important;
+    max-width: 500px !important;
+    margin: 0 auto 2.5rem auto !important;
+    line-height: 1.6 !important;
+}
+
+/* Modern Pill Button */
+.explore-btn {
+    z-index: 1;
+    display: inline-block !important;
+    padding: 1rem 2.5rem !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: var(--text-main) !important;
+    border-radius: 50px !important; /* Makes it round */
+    text-decoration: none !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.1em !important;
+    transition: all 0.3s ease !important;
+}
+
+.explore-btn:hover {
+    background: var(--text-main) !important;
+    color: var(--bg-color) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 10px 20px rgba(255,255,255,0.1) !important;
+}
