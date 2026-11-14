@@ -1,5 +1,5 @@
 // ⚠️ REPLACE THIS WITH YOUR IMGBB API KEY
-const IMGBB_API_KEY = "YOUR_IMGBB_API_KEY";
+const IMGBB_API_KEY = "e022a522bf0d1a4887e182d4aea38c17";
 
 async function checkUser() {
     const { data: { user } } = await supabaseClient.auth.getUser();
