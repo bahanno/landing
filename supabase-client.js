@@ -1,5 +1,5 @@
-// Supabase Initialization via Custom Domain (Bypassing ISP Block)
-const SUPABASE_URL = "https://api.bahanno.de5.net";
+// Direct Supabase Connection (Bypassing block via Private DNS)
+const SUPABASE_URL = "https://kpqwqoersgrwbzroobm.supabase.co";
 const SUPABASE_KEY = "sb_publishable_w-IAJ0CfCrpwRDI_rC67wQ_Q4TJgvDc";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
