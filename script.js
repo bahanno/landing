@@ -46,7 +46,7 @@ async function sendMessage() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 contents: [{
-                    parts: [{ text: `You are BAHANNO AI, a helpful, intelligent assistant for Bangladeshi students and tech enthusiasts. Answer briefly and in the same language the user uses (Bangla or English). User says: ${text}` }]
+                    parts: [{ text: `You are BAHANNO AI, a global, intelligent, and helpful tech-creative assistant. You are based in Bangladesh but serve a worldwide audience. Always reply in the exact same language the user speaks (e.g., English, Bengali, Spanish, Hindi, etc.). Be helpful, accurate, and concise. User says: ${text}` }]
                 }]
             })
         });
