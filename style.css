@@ -166,3 +166,34 @@ footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-
     .article-grid { grid-template-columns: 1fr; }
     .hero { height: 80vh; }
 }
+
+/* =========================================
+   TUTORIAL PAGE & VIDEO CARD STYLES
+   ========================================= */
+.tutorial-hero { padding: 10rem 0 4rem 0; text-align: center; }
+.tutorial-title { color: var(--text-main); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 600; margin-bottom: 1rem; }
+.tutorial-subtitle { color: var(--text-muted); font-size: 1.2rem; margin-bottom: 3rem; }
+
+.tutorial-content { padding: 4rem 0 8rem 0; }
+.tutorial-content h2 { color: var(--text-main); font-size: 1.8rem; margin: 2rem 0 1rem 0; }
+.tutorial-content p { font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem; color: var(--text-muted); }
+.tutorial-content ul { margin: 1rem 0 2rem 1.5rem; font-size: 1.1rem; line-height: 1.8; }
+.tutorial-content li { margin-bottom: 0.5rem; color: var(--text-muted); }
+.tutorial-content strong { color: var(--text-main); }
+
+/* Homepage Video Card */
+.video-card {
+    max-width: 900px; margin: 0 auto; border-radius: 16px; overflow: hidden;
+    position: relative; cursor: pointer; border: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.video-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+.video-thumbnail { width: 100%; display: block; aspect-ratio: 16/9; object-fit: cover; opacity: 0.7; transition: opacity 0.3s ease; }
+.video-card:hover .video-thumbnail { opacity: 1; }
+.video-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    background: rgba(0,0,0,0.5); text-align: center; padding: 2rem;
+}
+.video-overlay h3 { color: #fff; font-size: 1.5rem; margin-bottom: 1rem; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+.video-overlay p { color: var(--accent); font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; background: #fff; padding: 0.5rem 1.5rem; border-radius: 50px; }
