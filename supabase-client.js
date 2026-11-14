@@ -1,4 +1,4 @@
-// Direct Supabase Connection (Bypassing block via Private DNS)
+// Direct Supabase Connection (Testing with VPN ON)
 const SUPABASE_URL = "https://kpqwqoersgrwbzroobm.supabase.co";
 const SUPABASE_KEY = "sb_publishable_w-IAJ0CfCrpwRDI_rC67wQ_Q4TJgvDc";
 
