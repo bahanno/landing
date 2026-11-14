@@ -25,16 +25,27 @@
             
             <!-- Create Post Area -->
             <div class="create-post-card">
-                <h2>Create a new post</h2>
                 
-                <!-- Image Upload Area -->
+                <!-- Tabs -->
+                <div class="post-tabs">
+                    <button class="tab-btn active" data-type="video">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                        Video Post (Auto-slide)
+                    </button>
+                    <button class="tab-btn" data-type="image">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        Image Post (Swipe)
+                    </button>
+                </div>
+
+                <!-- Upload Area -->
                 <div class="upload-area" id="upload-area">
-                    <input type="file" id="image-input" accept="image/*" hidden>
-                    <label for="image-input" class="upload-label">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-                        <span>Select Image</span>
+                    <input type="file" id="image-input" accept="image/*" multiple hidden>
+                    <label for="image-input" class="upload-label" id="upload-label">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <span>Select Images (Max <span id="max-img-text">3</span>)</span>
                     </label>
-                    <img id="image-preview" class="image-preview" style="display: none;">
+                    <div id="preview-container" class="preview-container"></div>
                 </div>
 
                 <textarea id="post-content" placeholder="Write a caption..." maxlength="280"></textarea>
