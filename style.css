@@ -246,3 +246,55 @@ body {
     .suggestions-grid { grid-template-columns: 1fr; }
     .welcome-title { font-size: 1.8rem; }
 }
+
+/* =========================================
+   AUTHENTICATION PAGE STYLES
+   ========================================= */
+.auth-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+}
+
+.auth-section::before {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); width: 100vw; height: 100vw;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(6, 7, 10, 0) 60%);
+    z-index: -1; pointer-events: none;
+}
+
+.auth-container { width: 100%; max-width: 450px; }
+
+.auth-card {
+    background: rgba(20, 20, 25, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.auth-title { color: var(--text-main); font-size: 1.8rem; margin-bottom: 0.5rem; text-align: center; }
+.auth-subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; text-align: center; }
+
+.input-group { margin-bottom: 1.5rem; }
+.input-group label { display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.input-group input {
+    width: 100%; padding: 0.8rem 1rem; background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+    color: var(--text-main); font-family: var(--font-body); font-size: 1rem;
+    transition: border-color 0.3s ease, background 0.3s ease;
+}
+.input-group input:focus { outline: none; border-color: var(--accent); background: rgba(99, 102, 241, 0.05); }
+
+.w-100 { width: 100%; display: block; cursor: pointer; border: none; }
+
+.auth-toggle { color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-top: 1.5rem; }
+.auth-toggle a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.auth-toggle a:hover { text-decoration: underline; }
+
+.auth-message { margin-top: 1rem; text-align: center; font-size: 0.9rem; display: none; padding: 0.8rem; border-radius: 8px; background: rgba(255,255,255,0.05); }
