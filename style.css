@@ -553,3 +553,54 @@ footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255,
     /* Optional: subtle text glow to match the card */
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.1) !important;
 }
+
+/* =========================================
+   Professional Back Button (Glassmorphism)
+   ========================================= */
+.nav-back-wrapper {
+    position: fixed !important;
+    top: 2rem !important;
+    left: 2rem !important;
+    z-index: 100 !important;
+}
+
+.back-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.6rem 1.2rem !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 50px !important;
+    color: var(--text-muted) !important;
+    text-decoration: none !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    transition: all 0.3s ease !important;
+}
+
+.back-btn svg {
+    transition: transform 0.3s ease !important;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: var(--text-main) !important;
+}
+
+.back-btn:hover svg {
+    transform: translateX(-4px) !important; /* Arrow animates left on hover */
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .nav-back-wrapper {
+        top: 1.5rem !important;
+        left: 1.5rem !important;
+    }
+}
