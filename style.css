@@ -175,3 +175,74 @@ body {
     .chat-container { padding: 1rem 0.5rem; }
     .message { max-width: 95%; }
 }
+
+/* =========================================
+   Welcome Screen & Suggestion Cards
+   ========================================= */
+.welcome-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+    margin-top: -2rem;
+}
+
+.welcome-title {
+    font-family: var(--font-logo);
+    font-size: 2.2rem;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.02em;
+}
+
+.welcome-subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+.suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    width: 100%;
+    max-width: 600px;
+    padding: 0 1rem;
+}
+
+.suggestion-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1.2rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.suggestion-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.suggestion-card .icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.suggestion-card p {
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .suggestions-grid { grid-template-columns: 1fr; }
+    .welcome-title { font-size: 1.8rem; }
+}

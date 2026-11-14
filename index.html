@@ -17,13 +17,32 @@
 
     <!-- Chat Area -->
     <main class="chat-container" id="chatContainer">
-        <!-- Initial Bot Message -->
-        <div class="message bot-message">
-            <div class="avatar">B</div>
-            <div class="bubble">
-                Hello! I am BAHANNO AI. Born in Bangladesh, built for the world. How can I assist you today?
+<!-- Welcome Screen -->
+        <div class="welcome-screen" id="welcomeScreen">
+            <h2 class="welcome-title">How can I help you today?</h2>
+            <p class="welcome-subtitle">Ask anything. I speak your language.</p>
+            
+            <div class="suggestions-grid">
+                <div class="suggestion-card" onclick="useSuggestion('How to start freelancing in 2024?')">
+                    <span class="icon">💼</span>
+                    <p>How to start freelancing?</p>
+                </div>
+                <div class="suggestion-card" onclick="useSuggestion('Explain HTML in simple terms.')">
+                    <span class="icon">💻</span>
+                    <p>Explain HTML simply</p>
+                </div>
+                <div class="suggestion-card" onclick="useSuggestion('Write a short story about a robot.')">
+                    <span class="icon">✍️</span>
+                    <p>Write a short story</p>
+                </div>
+                <div class="suggestion-card" onclick="useSuggestion('How to use AI to make money online?')">
+                    <span class="icon">🚀</span>
+                    <p>How to earn using AI?</p>
+                </div>
             </div>
         </div>
+        
+        
     </main>
 
     <!-- Input Area -->

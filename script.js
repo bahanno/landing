@@ -118,3 +118,19 @@ function removeTypingIndicator(id) {
 function scrollToBottom() {
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
+
+// Suggestion Click Handler
+function useSuggestion(text) {
+    userInput.value = text;
+    sendMessage();
+}
+
+// Hide welcome screen on first message
+const originalSendMessage = sendMessage;
+sendMessage = async function() {
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    if (welcomeScreen) {
+        welcomeScreen.style.display = 'none';
+    }
+    await originalSendMessage();
+};
