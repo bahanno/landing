@@ -1,3 +1,6 @@
+/* =========================================
+   BAHANNO - EDUCATIONAL PLATFORM (V4)
+   ========================================= */
 @font-face {
     font-family: 'Bahanno Display';
     src: url('fonts/distant-galaxy.ttf') format('truetype');
@@ -5,690 +8,138 @@
     font-style: normal;
     font-display: swap;
 }
+
 :root {
-    --bg-color: #0A0B10;
+    --bg-color: #06070A; /* Deeper Black */
     --text-main: #FFFFFF;
     --text-muted: #A1A1AA;
-    --font-logo: 'Bahanno Display', 'Clash Display', sans-serif;
-    --font-body: 'Clash Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --accent: #6366f1; /* Premium Indigo */
+    --font-logo: 'Bahanno Display', sans-serif;
+    --font-body: 'Clash Display', sans-serif;
 }
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+
 body {
     background-color: var(--bg-color);
     color: var(--text-muted);
     font-family: var(--font-body);
     line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
 }
+
 .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-.hero {
-    position: relative;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0 2rem;
-    z-index: 1;
-}
-.hero::before {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100vw; height: 100vw;
-    background: radial-gradient(circle, rgba(63, 94, 251, 0.15) 0%, rgba(10, 11, 16, 0) 65%);
-    z-index: -1;
-    pointer-events: none;
-}
-.hero-content {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-.brand-name {
-    font-family: var(--font-logo);
-    font-size: clamp(4rem, 12vw, 9rem);
-    color: var(--text-main);
-    letter-spacing: 0.05em;
-    margin-bottom: 1rem;
-    line-height: 1;
-}
-.headline {
-    font-size: clamp(1.5rem, 4vw, 3rem);
-    font-weight: 500;
-    color: var(--text-main);
-    letter-spacing: -0.02em;
-}
-.marquee-container {
-    overflow: hidden;
-    white-space: nowrap;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+/* Navbar */
+.navbar {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
     padding: 1.5rem 0;
-    background-color: var(--bg-color);
+    background: rgba(6, 7, 10, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    z-index: 1000;
 }
+
+.nav-container {
+    max-width: 1200px; margin: 0 auto; padding: 0 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+}
+
+.nav-logo {
+    font-family: var(--font-logo);
+    color: var(--text-main);
+    font-size: 1.5rem;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+}
+
+.nav-links { display: flex; align-items: center; gap: 2rem; }
+.nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+.nav-links a:hover { color: var(--text-main); }
+
+.nav-btn {
+    background: var(--text-main); color: var(--bg-color) !important;
+    padding: 0.6rem 1.5rem; border-radius: 50px; font-weight: 600;
+}
+
+/* Hero */
+.hero {
+    height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; position: relative; padding: 0 2rem;
+}
+
+.hero::before {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); width: 100vw; height: 100vw;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(6, 7, 10, 0) 65%);
+    z-index: -1; pointer-events: none;
+}
+
+.hero-content { max-width: 800px; animation: fadeInUp 1.2s ease forwards; opacity: 0; transform: translateY(20px); }
+
+.brand-name {
+    font-family: var(--font-logo); font-size: clamp(4rem, 12vw, 9rem);
+    color: var(--text-main); letter-spacing: 0.05em; margin-bottom: 1rem; line-height: 1;
+}
+
+.headline { font-size: clamp(1.8rem, 5vw, 3.5rem); color: var(--text-main); font-weight: 500; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+.hero-subtext { font-size: clamp(1rem, 2vw, 1.2rem); max-width: 600px; margin: 0 auto 2.5rem auto; }
+
+.primary-btn {
+    display: inline-block; background: var(--text-main); color: var(--bg-color);
+    padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none;
+    font-weight: 600; font-size: 1rem; transition: all 0.3s ease;
+}
+.primary-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(255,255,255,0.2); }
+
+/* Marquee */
+.marquee-container { overflow: hidden; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 1rem 0; background: var(--bg-color); }
 .marquee-track { display: inline-flex; animation: marquee 25s linear infinite; }
-.marquee-track span {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    letter-spacing: 0.3em;
-    color: var(--text-main);
-    opacity: 0.5;
-    text-transform: uppercase;
-    padding-right: 1.5rem;
+.marquee-track span { font-size: 0.8rem; letter-spacing: 0.3em; color: var(--text-main); opacity: 0.4; text-transform: uppercase; padding-right: 1.5rem; }
+
+/* Sections */
+.section-title { color: var(--text-main); font-size: clamp(2rem, 4vw, 2.5rem); text-align: center; margin-bottom: 3rem; font-weight: 600; }
+.about { padding: 8rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.about-text { font-size: 1.15rem; max-width: 800px; margin: 0 auto; text-align: center; line-height: 1.8; }
+
+/* Programs */
+.programs { padding: 8rem 0; position: relative; }
+.programs::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80vw; height: 80vw; background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, rgba(10, 11, 16, 0) 60%); z-index: -1; pointer-events: none; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+
+.program-card {
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08);
+    padding: 3rem 2rem; border-radius: 16px; transition: all 0.4s ease;
 }
-@keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
-.about { padding: 8rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-.about-text {
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    max-width: 900px;
-    margin: 0 auto;
-    text-align: center;
-    font-weight: 400;
-}
-.pillars { position: relative; padding: 8rem 0; z-index: 1; }
-.pillars::before {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80vw; height: 80vw;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, rgba(10, 11, 16, 0) 60%);
-    z-index: -1;
-    pointer-events: none;
-}
-.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem; }
-.pillar-card {
-    padding: 3rem 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    transition: border-color 0.3s ease, transform 0.3s ease, background 0.3s ease;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%);
-}
-.pillar-card:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateY(-5px);
-    background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
-}
-.icon-wrapper {
-    margin-bottom: 1.5rem;
-    color: var(--text-main);
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
-.icon-wrapper svg { width: 38px; height: 38px; transition: transform 0.3s ease, color 0.3s ease; }
-.pillar-card:hover .icon-wrapper svg { transform: scale(1.1); color: #8b5cf6; }
-.pillar-card h3 { color: var(--text-main); font-size: 1.5rem; margin-bottom: 1rem; font-weight: 600; }
-footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.9rem; }
+.program-card:hover { transform: translateY(-8px); border-color: var(--accent); background: rgba(99, 102, 241, 0.05); }
+
+.icon-wrapper { margin-bottom: 1.5rem; color: var(--text-main); }
+.icon-wrapper svg { width: 42px; height: 42px; transition: color 0.3s; }
+.program-card:hover .icon-wrapper svg { color: var(--accent); }
+.program-card h3 { color: var(--text-main); font-size: 1.5rem; margin-bottom: 1rem; }
+
+/* CTA Section */
+.cta-section { padding: 6rem 0; text-align: center; background: linear-gradient(180deg, transparent, rgba(99, 102, 241, 0.05)); }
+.cta-section h2 { color: var(--text-main); font-size: 2.5rem; margin-bottom: 1rem; }
+.cta-section p { margin-bottom: 2rem; }
+.mt-2 { margin-top: 1rem; }
+
+/* Footer */
+footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
+.footer-content { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+.footer-link { color: var(--accent); text-decoration: none; font-size: 0.95rem; transition: color 0.3s; }
+.footer-link:hover { color: var(--text-main); }
+
+@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
-/* Torongo Page & Explore Link Styles */
-.explore-link {
-    display: inline-block;
-    margin-top: 1.5rem;
-    color: var(--text-main);
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    padding-bottom: 2px;
-    transition: border-color 0.3s ease, color 0.3s ease;
-}
-
-.explore-link:hover {
-    border-color: var(--text-main);
-    color: #8b5cf6;
-}
-
-.nav-back {
-    padding: 2rem;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10;
-}
-
-.nav-back a {
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: color 0.3s ease;
-}
-
-.nav-back a:hover {
-    color: var(--text-main);
-}
-
-.torongo-hero {
-    height: 70vh; 
-}
-
-.torongo-hero .brand-name {
-    font-size: clamp(3rem, 10vw, 7rem);
-}
-
-/* =========================================
-   Our Ecosystem & Torongo Card Styles
-   ========================================= */
-.ecosystem {
-    padding: 8rem 0;
-    position: relative;
-    z-index: 1;
-}
-
-.section-title {
-    text-align: center;
-    color: var(--text-main);
-    font-size: clamp(2rem, 5vw, 3rem);
-    margin-bottom: 4rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-}
-
-.torongo-card {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #111218;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    padding: 4rem 2rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-}
-
-/* Dark red/brown subtle glow */
-.torongo-card::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 150%;
-    height: 150%;
-    background: radial-gradient(circle, rgba(139, 0, 0, 0.15) 0%, rgba(10, 11, 16, 0) 60%);
-    z-index: -1;
-    pointer-events: none;
-}
-
-.torongo-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.torongo-logo {
-    display: block !important;
-    margin: 0 auto 1.5rem auto !important;
-    max-width: 320px !important;
-    filter: brightness(0) invert(1) !important; /* যেকোনো ছবিকে সাদা করে দেবে */
-}
-
-.torongo-card h3 {
-    color: var(--text-main);
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    font-weight: 600;
-}
-
-.torongo-desc {
-    color: var(--text-muted);
-    font-size: 1.1rem;
-    max-width: 600px;
-    margin: 0 auto 2.5rem auto;
-}
-
-.featured-release {
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 1.5rem 2rem;
-    border-radius: 8px;
-    text-align: left;
-}
-
-.featured-release p {
-    color: var(--text-main);
-    font-size: 0.95rem;
-    margin-bottom: 1rem;
-}
-
-.featured-release strong {
-    color: #fff;
-    font-weight: 600;
-}
-
-.ghost-btn {
-    display: inline-block;
-    padding: 0.8rem 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-    color: var(--text-main);
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    transition: background 0.3s ease, border-color 0.3s ease;
-}
-
-.ghost-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.8);
-}
-
-/* Mobile Adjustments */
+/* Mobile */
 @media (max-width: 768px) {
-    .featured-release {
-        padding: 1rem;
-        width: 100%;
-        text-align: center;
-    }
-    .ghost-btn {
-        margin-top: 1rem;
-    }
-}
-
-/* Torongo Logo Color & Transparency Fix for Dark Mode */
-.torongo-logo {
-    display: block !important;
-    margin: 0 auto 1.5rem auto !important;
-    max-width: 320px !important;
-    filter: brightness(0) invert(1) !important; /* যেকোনো ছবিকে সাদা করে দেবে */
-}
-
-/* =========================================
-   ECOSYSTEM SECTION FIXES (Override)
-   ========================================= */
-.ecosystem {
-    text-align: center !important;
-    padding: 6rem 0 !important;
-}
-
-.section-title {
-    text-align: center !important;
-    color: var(--text-main) !important;
-    font-size: clamp(2rem, 5vw, 3rem) !important;
-    margin-bottom: 3rem !important;
-    font-weight: 600 !important;
-    display: block !important;
-    width: 100% !important;
-}
-
-.torongo-card {
-    max-width: 800px !important;
-    margin: 0 auto !important;
-    background: #111218 !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 12px !important;
-    padding: 3rem 2rem !important;
-    text-align: center !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    position: relative !important;
-    overflow: hidden !important;
-    box-shadow: 0 0 40px rgba(139, 0, 0, 0.2) !important; /* Subtle dark red glow */
-}
-
-.torongo-card h3 {
-    color: var(--text-main) !important;
-    font-size: 2rem !important;
-    margin-bottom: 1rem !important;
-    margin-top: 0 !important;
-}
-
-.torongo-desc {
-    color: var(--text-muted) !important;
-    font-size: 1.1rem !important;
-    max-width: 600px !important;
-    margin: 0 auto 2rem auto !important;
-    line-height: 1.6 !important;
-}
-
-.featured-release {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    background: rgba(255, 255, 255, 0.03) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    padding: 1rem 2rem !important;
-    border-radius: 8px !important;
-    gap: 1rem !important;
-}
-
-.featured-release p {
-    color: var(--text-main) !important;
-    margin: 0 !important;
-    font-size: 1rem !important;
-}
-
-.ghost-btn {
-    display: inline-block !important;
-    padding: 0.8rem 1.5rem !important;
-    border: 1px solid rgba(255, 255, 255, 0.4) !important;
-    border-radius: 4px !important;
-    color: var(--text-main) !important;
-    text-decoration: none !important;
-    font-size: 0.85rem !important;
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
-    transition: all 0.3s ease !important;
-    background: transparent !important;
-}
-
-.ghost-btn:hover {
-    background: var(--text-main) !important;
-    color: var(--bg-color) !important;
-    border-color: var(--text-main) !important;
-}
-
-/* Torongo Logo Size Override */
-.torongo-logo {
-    display: block !important;
-    margin: 0 auto 1rem auto !important;
-    max-width: 600px !important;
-    width: 80% !important;
-    filter: brightness(0) invert(1) !important; 
-}
-
-/* =========================================
-   ECOSYSTEM SECTION - PROFESSIONAL REDESIGN
-   ========================================= */
-.ecosystem {
-    padding: 6rem 0 !important;
-    text-align: center !important;
-}
-
-.torongo-card {
-    max-width: 700px !important;
-    margin: 0 auto !important;
-    background: linear-gradient(180deg, #111218 0%, #0A0B10 100%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 16px !important;
-    padding: 4rem 2rem !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    position: relative !important;
-    overflow: hidden !important;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
-}
-
-/* Dark red/brown subtle glow */
-.torongo-card::before {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 150%; height: 150%;
-    background: radial-gradient(circle, rgba(139, 0, 0, 0.12) 0%, rgba(10, 11, 16, 0) 60%);
-    z-index: 0;
-    pointer-events: none;
-}
-
-/* Logo Container to crop whitespace */
-.torongo-logo-container {
-    z-index: 1;
-    width: 200px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    margin-bottom: 2rem;
-}
-
-.torongo-logo {
-    width: 100%;
-    transform: scale(2.2) !important; /* Zooms in to ignore image whitespace */
-    filter: brightness(0) invert(1) !important; /* Makes logo pure white */
-}
-
-.torongo-desc {
-    z-index: 1;
-    color: var(--text-muted) !important;
-    font-size: 1.1rem !important;
-    max-width: 500px !important;
-    margin: 0 auto 2.5rem auto !important;
-    line-height: 1.6 !important;
-}
-
-/* Modern Pill Button */
-.explore-btn {
-    z-index: 1;
-    display: inline-block !important;
-    padding: 1rem 2.5rem !important;
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    color: var(--text-main) !important;
-    border-radius: 50px !important; /* Makes it round */
-    text-decoration: none !important;
-    font-size: 0.9rem !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.1em !important;
-    transition: all 0.3s ease !important;
-}
-
-.explore-btn:hover {
-    background: var(--text-main) !important;
-    color: var(--bg-color) !important;
-    transform: translateY(-3px) !important;
-    box-shadow: 0 10px 20px rgba(255,255,255,0.1) !important;
-}
-
-/* Final Professional Fixes */
-.featured-release { display: none !important; } /* Hide any old boxes */
-
-.torongo-logo-container {
-    width: 100% !important;
-    max-width: 350px !important;
-    margin-bottom: 2rem !important;
-    display: flex !important;
-    justify-content: center !important;
-}
-
-.torongo-logo {
-    width: 100% !important;
-    transform: scale(1.4) !important; /* Zooms the logo to look bigger */
-    filter: brightness(0) invert(1) !important;
-}
-
-.explore-btn {
-    display: inline-block !important;
-    padding: 1rem 3.5rem !important;
-    background: transparent !important;
-    border: 1px solid rgba(255, 255, 255, 0.4) !important;
-    color: #fff !important;
-    border-radius: 50px !important;
-    text-decoration: none !important;
-    font-size: 0.95rem !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.15em !important;
-    transition: all 0.3s ease !important;
-    margin-top: 1rem !important;
-}
-
-.explore-btn:hover {
-    background: #fff !important;
-    color: #000 !important;
-    border-color: #fff !important;
-    transform: translateY(-3px) !important;
-}
-
-/* --- Fix Logo Clipping --- */
-.torongo-logo-container {
-    height: auto !important;
-    overflow: visible !important;
-    width: 100% !important;
-    max-width: 280px !important; /* Adjust width for perfect balance */
-    margin-bottom: 1.5rem !important;
-    padding: 10px !important;
-}
-
-.torongo-logo {
-    width: 100% !important;
-    transform: scale(1.15) !important; /* Slight scale up without clipping */
-    filter: brightness(0) invert(1) !important;
-}
-
-/* --- Torongo Text Logo Styling --- */
-.torongo-text-logo {
-    font-family: var(--font-logo) !important; /* Uses DISTGRG font */
-    font-size: clamp(3.5rem, 10vw, 6rem) !important;
-    color: var(--text-main) !important;
-    letter-spacing: 0.05em !important;
-    margin-bottom: 1.5rem !important;
-    line-height: 1 !important;
-    text-transform: uppercase !important;
-    /* Optional: subtle text glow to match the card */
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1) !important;
-}
-
-/* =========================================
-   Professional Back Button (Glassmorphism)
-   ========================================= */
-.nav-back-wrapper {
-    position: fixed !important;
-    top: 2rem !important;
-    left: 2rem !important;
-    z-index: 100 !important;
-}
-
-.back-btn {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    padding: 0.6rem 1.2rem !important;
-    background: rgba(255, 255, 255, 0.03) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 50px !important;
-    color: var(--text-muted) !important;
-    text-decoration: none !important;
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-    letter-spacing: 0.05em !important;
-    text-transform: uppercase !important;
-    transition: all 0.3s ease !important;
-}
-
-.back-btn svg {
-    transition: transform 0.3s ease !important;
-}
-
-.back-btn:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    color: var(--text-main) !important;
-}
-
-.back-btn:hover svg {
-    transform: translateX(-4px) !important; /* Arrow animates left on hover */
-}
-
-/* Mobile Adjustments */
-@media (max-width: 768px) {
-    .nav-back-wrapper {
-        top: 1.5rem !important;
-        left: 1.5rem !important;
-    }
-}
-
-/* =========================================
-   Torongo Page Layout Polish
-   ========================================= */
-
-/* Fix the back button to not blend with scrolling text */
-.nav-back-wrapper {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    padding: 1.5rem 2rem !important;
-    background: linear-gradient(to bottom, rgba(10, 11, 16, 0.9) 0%, rgba(10, 11, 16, 0) 100%) !important;
-    z-index: 1000 !important;
-    pointer-events: none !important; /* Allows clicking through the empty space */
-}
-
-.back-btn {
-    pointer-events: auto !important; /* Makes the button clickable */
-}
-
-/* Adjust Hero Section to account for fixed header */
-.torongo-hero {
-    min-height: 80vh !important;
-    padding-top: 6rem !important; /* Pushes text down so it doesn't hide behind the button */
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-/* Enhance the About Text section on Torongo page */
-.torongo-hero + .about {
-    padding-top: 4rem !important;
-    padding-bottom: 6rem !important;
-    background: linear-gradient(180deg, rgba(10, 11, 16, 0) 0%, rgba(139, 92, 246, 0.03) 100%) !important;
-}
-
-.torongo-hero + .about .about-text {
-    line-height: 1.8 !important;
-    font-size: 1.15rem !important;
-    max-width: 800px !important;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .nav-back-wrapper {
-        padding: 1rem !important;
-    }
-}
-
-/* =========================================
-   POLISH: Size, Spacing & Hover Glows
-   ========================================= */
-
-/* 1. Make TORONGO Title Smaller and Add Spacing */
-.torongo-title {
-    font-size: clamp(3.5rem, 12vw, 7.5rem) !important; /* Reduced size */
-}
-
-.torongo-hero {
-    padding-top: 10rem !important; /* Added gap from top nav */
-    min-height: 85vh !important; 
-}
-
-.title-divider {
-    margin: 1.5rem auto !important; /* Adjusting space around divider */
-}
-
-/* 2. ABOUT Button Hover Glow (Home Page) */
-.explore-btn:hover {
-    background: #fff !important;
-    color: #000 !important;
-    border-color: #fff !important;
-    box-shadow: 0 0 25px rgba(255, 255, 255, 0.3) !important; /* White glow */
-    transform: translateY(-3px) scale(1.02) !important;
-}
-
-/* 3. BACK TO HOME Button Hover Glow (Torongo Page) */
-.back-btn:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15) !important; /* Subtle glow */
-    color: #fff !important;
-}
-
-.back-btn:hover svg {
-    transform: translateX(-4px) !important; /* Arrow slides left */
+    .nav-links { display: none; } /* Hide links on mobile for now */
+    .navbar { padding: 1rem 0; }
+    .brand-name { margin-top: 2rem; }
 }
