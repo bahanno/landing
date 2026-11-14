@@ -1,65 +1,105 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAHANNO AI — Your Bangladeshi Assistant</title>
+    <title>BAHANNO — The Global Social Network</title>
+    <meta name="description" content="Bahanno is a global social network born in Bangladesh. Share images, auto-slide video posts, and connect with the world.">
     <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-    <header class="chat-header">
-        <h1 class="brand-name">BAHANNO AI</h1>
-        <p class="status">Global AI Assistant • Powered by Gemini</p>
-    </header>
-
-    <!-- Chat Area -->
-    <main class="chat-container" id="chatContainer">
-<!-- Welcome Screen -->
-        <div class="welcome-screen" id="welcomeScreen">
-            <h2 class="welcome-title">How can I help you today?</h2>
-            <p class="welcome-subtitle">Ask anything. I speak your language.</p>
-            
-            <div class="suggestions-grid">
-                <div class="suggestion-card" onclick="useSuggestion('How to start freelancing in 2024?')">
-                    <span class="icon">💼</span>
-                    <p>How to start freelancing?</p>
-                </div>
-                <div class="suggestion-card" onclick="useSuggestion('Explain HTML in simple terms.')">
-                    <span class="icon">💻</span>
-                    <p>Explain HTML simply</p>
-                </div>
-                <div class="suggestion-card" onclick="useSuggestion('Write a short story about a robot.')">
-                    <span class="icon">✍️</span>
-                    <p>Write a short story</p>
-                </div>
-                <div class="suggestion-card" onclick="useSuggestion('How to use AI to make money online?')">
-                    <span class="icon">🚀</span>
-                    <p>How to earn using AI?</p>
-                </div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">BAHANNO</a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+                <a href="login.html" class="nav-btn">Login / Sign Up</a>
             </div>
         </div>
-        
-        
-    </main>
+    </nav>
 
-    <!-- Input Area -->
-    <div class="input-container">
-        <div class="input-box">
-            <input type="text" id="userInput" placeholder="Message BAHANNO AI..." autocomplete="off">
-            <button id="sendBtn" onclick="sendMessage()">
-                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-            </button>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="brand-name">BAHANNO</h1>
+            <h2 class="headline">The Global Social Network.<br>Born in Bangladesh.</h2>
+            <p class="hero-subtext">A new era of sharing. Post stunning visuals, connect with people worldwide, and experience a platform built for the future.</p>
+            <div class="hero-buttons">
+                <a href="login.html" class="primary-btn">Join the Community</a>
+                <a href="#features" class="secondary-btn">Explore Features</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Marquee -->
+    <div class="marquee-container">
+        <div class="marquee-track">
+            <span>CONNECT • SHARE • INSPIRE • CREATE • GLOBAL • BANGLADESH • </span>
+            <span>CONNECT • SHARE • INSPIRE • CREATE • GLOBAL • BANGLADESH • </span>
         </div>
     </div>
 
-    <script src="supabase-client.js"></script>
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Why BAHANNO?</h2>
+            <div class="grid-3">
+                
+                <div class="feature-card">
+                    <div class="icon-wrapper">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </div>
+                    <h3>Swipeable Image Posts</h3>
+                    <p>Upload up to 5 high-quality images. Swipe through seamlessly like your favorite premium apps.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon-wrapper">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                    </div>
+                    <h3>Auto-Slide Video Posts</h3>
+                    <p>Upload 3 images and watch them come alive with our automatic 3-second slideshow feature.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon-wrapper">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    </div>
+                    <h3>Truly Global</h3>
+                    <p>Connect beyond borders. Built on modern technology, accessible from anywhere in the world.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <h2 class="section-title">Our Vision</h2>
+            <p class="about-text">
+                Bahanno is more than just an app. It is a statement. Born from the resilient spirit of Bangladesh, we are building a global platform where creativity knows no boundaries. We believe in the power of visual storytelling and authentic connection.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <h2 class="footer-logo">BAHANNO</h2>
+            <p>&copy; 2026 Bahanno Social Media. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="login.html">Login</a>
+                <a href="#features">Features</a>
+            </div>
+        </div>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 </html>
