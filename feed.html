@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed — BAHANNO</title>
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">BAHANNO</a>
+            <div class="nav-links">
+                <span id="user-email" style="color: var(--text-muted); font-size: 0.9rem;"></span>
+                <button id="logout-btn" class="nav-btn" style="cursor: pointer; border: none;">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="feed-section">
+        <div class="container feed-layout">
+            
+            <!-- Create Post Area -->
+            <div class="create-post-card">
+                <h2>What's on your mind?</h2>
+                <textarea id="post-content" placeholder="Share your thoughts with the world..." maxlength="280"></textarea>
+                <div class="post-actions">
+                    <span id="char-count">0/280</span>
+                    <button id="post-btn" class="primary-btn">Post</button>
+                </div>
+            </div>
+
+            <!-- Feed Area -->
+            <div id="feed-container" class="feed-container">
+                <!-- Posts will be loaded here via JavaScript -->
+                <div class="loading-text">Loading posts...</div>
+            </div>
+
+        </div>
+    </section>
+
+    <script src="supabase-client.js"></script>
+    <script src="feed.js"></script>
+</body>
+</html>
