@@ -10,6 +10,7 @@ const authSubtitle = document.querySelector('.auth-subtitle');
 toggleAuth.addEventListener('click', (e) => {
     e.preventDefault();
     isLoginMode = !isLoginMode;
+    
     if (isLoginMode) {
         authTitle.innerText = "Welcome Back";
         authSubtitle.innerText = "Log in to continue to Bahanno.";
@@ -34,6 +35,9 @@ authForm.addEventListener('submit', async (e) => {
 
     submitBtn.innerText = "Processing...";
     submitBtn.disabled = true;
+    authMessage.style.display = 'block';
+    authMessage.style.color = "var(--text-muted)";
+    authMessage.innerText = "Connecting to server...";
 
     try {
         if (isLoginMode) {
@@ -43,9 +47,10 @@ authForm.addEventListener('submit', async (e) => {
                 password: password,
             });
             if (error) throw error;
+            
             authMessage.style.color = "#4ade80";
-            authMessage.innerText = "Login successful! Redirecting...";
-            setTimeout(() => window.location.href = "index.html", 1500);
+            authMessage.innerText = "Login successful! Redirecting to feed...";
+            setTimeout(() => window.location.href = "feed.html", 1500);
 
         } else {
             // SIGNUP
@@ -54,9 +59,13 @@ authForm.addEventListener('submit', async (e) => {
                 password: password,
             });
             if (error) throw error;
+            
             authMessage.style.color = "#4ade80";
-            authMessage.innerText = "Signup successful! Check your email for verification or log in.";
-            toggleAuth.click(); // Switch to login mode
+            authMessage.innerText = "Signup successful! Check your email to verify.";
+            
+            setTimeout(() => {
+                toggleAuth.click(); // Switch to login mode
+            }, 3000);
         }
     } catch (error) {
         authMessage.style.color = "#f87171"; // Red error
