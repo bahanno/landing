@@ -36,7 +36,7 @@ authForm.addEventListener('submit', async (e) => {
     submitBtn.innerText = "Processing...";
     submitBtn.disabled = true;
     authMessage.style.display = 'block';
-    authMessage.style.color = "var(--text-muted)";
+    authMessage.style.color = "#facc15"; // Yellow for processing
     authMessage.innerText = "Connecting to server...";
 
     try {
@@ -68,8 +68,18 @@ authForm.addEventListener('submit', async (e) => {
             }, 3000);
         }
     } catch (error) {
+        console.error("Full Error Details:", error); // For Devs
+        
         authMessage.style.color = "#f87171"; // Red error
-        authMessage.innerText = error.message;
+        
+        // Detailed Error Breakdown
+        if (error.message === "Failed to fetch") {
+            authMessage.innerText = "Network Error: Browser cannot reach the API. Your ISP is blocking it or DNS is failing.";
+        } else if (error.status) {
+            authMessage.innerText = `Server Error (${error.status}): ${error.message}`;
+        } else {
+            authMessage.innerText = `Error: ${error.message}`;
+        }
     } finally {
         submitBtn.innerText = isLoginMode ? "Log In" : "Sign Up";
         submitBtn.disabled = false;
