@@ -3,117 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAHANNO — Bangladesh's Tech & Creative Network</title>
+    <title>BAHANNO AI — Your Bangladeshi Assistant</title>
     <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
 <body>
 
-    <!-- Top Navbar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#" class="nav-logo">BAHANNO</a>
-            <div class="search-bar">
-                <input type="text" placeholder="Search BAHANNO...">
-            </div>
-            <div class="nav-actions">
-                <a href="earn-money.html" class="nav-link">Earn Guide</a>
-                <a href="#" class="nav-btn">Login / Sign Up</a>
+    <header class="chat-header">
+        <h1 class="brand-name">BAHANNO AI</h1>
+        <p class="status">Powered by Gemini • Online</p>
+    </header>
+
+    <!-- Chat Area -->
+    <main class="chat-container" id="chatContainer">
+        <!-- Initial Bot Message -->
+        <div class="message bot-message">
+            <div class="avatar">B</div>
+            <div class="bubble">
+                আসসালামু আলাইকুম! আমি BAHANNO AI। তোমাকে কীভাবে সাহায্য করতে পারি? পড়াশোনা, প্রোগ্রামিং, নাকি ইনকাম নিয়ে জানতে চাও?
             </div>
         </div>
-    </nav>
+    </main>
 
-    <!-- Main App Layout -->
-    <div class="app-layout">
-        
-        <!-- Left Sidebar -->
-        <aside class="sidebar-left">
-            <ul class="nav-menu">
-                <li><a href="#" class="active">Home</a></li>
-                <li><a href="#">Explore</a></li>
-                <li><a href="#">Notifications</a></li>
-                <li><a href="#">Messages</a></li>
-                <li><a href="#">Profile</a></li>
-            </ul>
-            <button class="tweet-btn">Create Post</button>
-        </aside>
-
-        <!-- Main Feed -->
-        <main class="main-feed">
-            <div class="feed-header">
-                <h2>Home</h2>
-            </div>
-
-            <!-- Create Post Box -->
-            <div class="create-post-box">
-                <div class="avatar"></div>
-                <input type="text" placeholder="What's happening in tech?" id="postInput">
-                <button class="post-action-btn" onclick="addPost()">Post</button>
-            </div>
-
-            <!-- Post 1 -->
-            <div class="post-card">
-                <div class="post-header">
-                    <div class="avatar bg-purple"></div>
-                    <div class="user-info">
-                        <span class="user-name">Bahanno Tech <span class="verified">✓</span></span>
-                        <span class="user-handle">@bahanno · 2h</span>
-                    </div>
-                </div>
-                <div class="post-content">
-                    <p>AI এবং ফ্রিল্যান্সিং নিয়ে আমাদের নতুন ভিডিও টিউটোরিয়ালগুলো আপলোড করা হয়েছে! যারা নতুন শুরু করছেন, তাদের জন্য দারুণ সুযোগ। 🚀</p>
-                    <a href="ai-income.html" class="post-link">Watch AI Income Guide &rarr;</a>
-                </div>
-                <div class="post-actions">
-                    <button onclick="toggleLike(this)">❤️ 124</button>
-                    <button>💬 12</button>
-                    <button>🔗 Share</button>
-                </div>
-            </div>
-
-            <!-- Post 2 -->
-            <div class="post-card">
-                <div class="post-header">
-                    <div class="avatar bg-orange"></div>
-                    <div class="user-info">
-                        <span class="user-name">Hablu Programmer</span>
-                        <span class="user-handle">@hablu · 5h</span>
-                    </div>
-                </div>
-                <div class="post-content">
-                    <p>বাংলাদেশে টেক এডুকেশনকে সহজলভ্য করতে BAHANNO-র এই উদ্যোগ সত্যিই প্রশংসনীয়। সবাই HTML বেসিকটা শিখে ফেলো।</p>
-                </div>
-                <div class="post-actions">
-                    <button onclick="toggleLike(this)">❤️ 89</button>
-                    <button>💬 5</button>
-                    <button>🔗 Share</button>
-                </div>
-            </div>
-        </main>
-
-        <!-- Right Sidebar (Trends) -->
-        <aside class="sidebar-right">
-            <div class="trends-box">
-                <h3>Trends for you</h3>
-                <div class="trend-item">
-                    <span class="trend-category">Technology · Trending</span>
-                    <span class="trend-name">#AIinBangladesh</span>
-                    <span class="trend-tweets">1,245 posts</span>
-                </div>
-                <div class="trend-item">
-                    <span class="trend-category">Freelancing · Trending</span>
-                    <span class="trend-name">#EarnOnline</span>
-                    <span class="trend-tweets">850 posts</span>
-                </div>
-                <div class="trend-item">
-                    <span class="trend-category">Education · Trending</span>
-                    <span class="trend-name">#LearnToCode</span>
-                    <span class="trend-tweets">2,100 posts</span>
-                </div>
-            </div>
-        </aside>
-
+    <!-- Input Area -->
+    <div class="input-container">
+        <div class="input-box">
+            <input type="text" id="userInput" placeholder="Ask me anything..." autocomplete="off">
+            <button id="sendBtn" onclick="sendMessage()">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <script src="script.js"></script>
