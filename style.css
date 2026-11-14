@@ -1,5 +1,5 @@
 /* =========================================
-   BAHANNO - EDUCATIONAL PLATFORM (V4)
+   BAHANNO EDTECH PLATFORM - CLEAN CSS
    ========================================= */
 @font-face {
     font-family: 'Bahanno Display';
@@ -10,10 +10,10 @@
 }
 
 :root {
-    --bg-color: #06070A; /* Deeper Black */
+    --bg-color: #06070A; 
     --text-main: #FFFFFF;
     --text-muted: #A1A1AA;
-    --accent: #6366f1; /* Premium Indigo */
+    --accent: #6366f1; 
     --font-logo: 'Bahanno Display', sans-serif;
     --font-body: 'Clash Display', sans-serif;
 }
@@ -36,7 +36,7 @@ body {
     position: fixed;
     top: 0; left: 0; width: 100%;
     padding: 1.5rem 0;
-    background: rgba(6, 7, 10, 0.8);
+    background: rgba(6, 7, 10, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -51,18 +51,26 @@ body {
 .nav-logo {
     font-family: var(--font-logo);
     color: var(--text-main);
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     text-decoration: none;
     letter-spacing: 0.05em;
 }
 
 .nav-links { display: flex; align-items: center; gap: 2rem; }
-.nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+.nav-links a { 
+    color: var(--text-muted); 
+    text-decoration: none; 
+    font-size: 0.95rem; 
+    transition: color 0.3s; 
+}
 .nav-links a:hover { color: var(--text-main); }
 
 .nav-btn {
-    background: var(--text-main); color: var(--bg-color) !important;
-    padding: 0.6rem 1.5rem; border-radius: 50px; font-weight: 600;
+    background: var(--text-main); 
+    color: var(--bg-color) !important;
+    padding: 0.6rem 1.5rem; 
+    border-radius: 50px; 
+    font-weight: 600;
 }
 
 /* Hero */
@@ -130,16 +138,14 @@ body {
 
 /* Footer */
 footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
-.footer-content { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
-.footer-link { color: var(--accent); text-decoration: none; font-size: 0.95rem; transition: color 0.3s; }
-.footer-link:hover { color: var(--text-main); }
+.footer-content { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
 
 @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
 /* Mobile */
 @media (max-width: 768px) {
-    .nav-links { display: none; } /* Hide links on mobile for now */
+    .nav-links { display: none; } /* Mobile-e menu hide kora holo */
     .navbar { padding: 1rem 0; }
     .brand-name { margin-top: 2rem; }
 }
