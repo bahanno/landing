@@ -1,91 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAHANNO — Read, Learn, and Build</title>
-    <meta name="description" content="A premium text-based educational platform. Dive into stories, essays, and learn programming through curated videos.">
+    <title>BAHANNO — Bangladesh's Tech & Creative Network</title>
     <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <meta name="google-site-verification" content="NQYOWww0oI9K60jm8zkJA8tMmXMYmN0m78YshQ8pZj4" />
 </head>
 <body>
 
-    <!-- Premium Sticky Navbar -->
+    <!-- Top Navbar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="#" class="nav-logo">BAHANNO</a>
-            <div class="nav-links">
-                <a href="#codes">Learn Codes</a>
-                <a href="#about">About</a>
-                <a href="earn-money.html">Earn Money</a>
-                <a href="#enroll" class="nav-btn">Join</a>
+            <div class="search-bar">
+                <input type="text" placeholder="Search BAHANNO...">
+            </div>
+            <div class="nav-actions">
+                <a href="earn-money.html" class="nav-link">Earn Guide</a>
+                <a href="#" class="nav-btn">Login / Sign Up</a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="hero" id="home">
-        <div class="hero-content">
-            <h1 class="brand-name">BAHANNO</h1>
-            <h2 class="headline">Where Words Meet Wisdom.</h2>
-            <p class="hero-subtext">আমরা কোর্স বিক্রি করি না। আমরা শুধু সঠিক রাস্তা দেখাই। AI ও টেকনোলজির যুগে নিজেকে গড়ে তুলতে প্রয়োজনীয় সেরা রিসোর্সগুলো খুঁজে নাও এখানে।</p>
-        </div>
-    </header>
+    <!-- Main App Layout -->
+    <div class="app-layout">
+        
+        <!-- Left Sidebar -->
+        <aside class="sidebar-left">
+            <ul class="nav-menu">
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="#">Explore</a></li>
+                <li><a href="#">Notifications</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+            <button class="tweet-btn">Create Post</button>
+        </aside>
 
-    <!-- Marquee -->
-    <div class="marquee-container">
-        <div class="marquee-track">
-            <span>ESSAYS • SHORT STORIES • 100 WORDS • TECH INSIGHTS • CODING • TUTORIALS • </span>
-            <span>ESSAYS • SHORT STORIES • 100 WORDS • TECH INSIGHTS • CODING • TUTORIALS • </span>
-        </div>
-    </div>
+        <!-- Main Feed -->
+        <main class="main-feed">
+            <div class="feed-header">
+                <h2>Home</h2>
+            </div>
 
-    
+            <!-- Create Post Box -->
+            <div class="create-post-box">
+                <div class="avatar"></div>
+                <input type="text" placeholder="What's happening in tech?" id="postInput">
+                <button class="post-action-btn" onclick="addPost()">Post</button>
+            </div>
 
-    <!-- Learn Codes Section (Video Embed) -->
-    <section class="learn-codes" id="codes">
-        <div class="container">
-            <h2 class="section-title">Learn Codes Beyond the Classroom</h2>
-            <p class="section-subtitle">Watch curated tutorials. Master programming step-by-step.</p>
-            
-            <div class="video-card">
-                <a href="html-tutorial.html" class="video-link">
-                    <img src="https://img.youtube.com/vi/b4Rlq3KTSik/maxresdefault.jpg" alt="এক টিউটোরিয়ালে HTML শিখুন" class="video-thumbnail">
-                    <div class="video-overlay">
-                        <h3>এক টিউটোরিয়ালে HTML শিখুন</h3>
-                        <p>Watch Tutorial &rarr;</p>
+            <!-- Post 1 -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="avatar bg-purple"></div>
+                    <div class="user-info">
+                        <span class="user-name">Bahanno Tech <span class="verified">✓</span></span>
+                        <span class="user-handle">@bahanno · 2h</span>
                     </div>
-                </a>
+                </div>
+                <div class="post-content">
+                    <p>AI এবং ফ্রিল্যান্সিং নিয়ে আমাদের নতুন ভিডিও টিউটোরিয়ালগুলো আপলোড করা হয়েছে! যারা নতুন শুরু করছেন, তাদের জন্য দারুণ সুযোগ। 🚀</p>
+                    <a href="ai-income.html" class="post-link">Watch AI Income Guide &rarr;</a>
+                </div>
+                <div class="post-actions">
+                    <button onclick="toggleLike(this)">❤️ 124</button>
+                    <button>💬 12</button>
+                    <button>🔗 Share</button>
+                </div>
             </div>
-            <p class="video-caption">Featured: Introduction to Web Development</p>
-        </div>
-    </section>
 
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="container">
-            <h2 class="section-title">আমাদের লক্ষ্য (Our Vision)</h2>
-            <div class="about-card">
-                <p class="about-text" style="font-family: inherit; text-align: left; line-height: 1.8;">
-                    পড়াশোনা আর কোচিংয়ের চাপে তো অনেক দিন গেল, এবার একটু নিজের ভবিষ্যৎ নিয়ে ভাবো! পুরোনো সিলেবাস আর মুখস্থবিদ্যা দিয়ে সামনের দুনিয়ায় টিকে থাকা সত্যিই কঠিন। কারণ, <strong>AI আর আধুনিক টেকনোলজিই এখন আমাদের সবচেয়ে কাছের ভবিষ্যৎ।</strong>
-                    <br><br>
-                    BAHANNO কোনো কোর্স বিক্রির দোকান নয়। আমরা শুধু তোমাকে সঠিক রাস্তাটা দেখিয়ে দিতে চাই। ইন্টারনেটের বিশাল দুনিয়া থেকে সেরা আর কাজের লার্নিং সোর্সগুলো আমরা এক জায়গায় এনে দিই, যাতে কারো ওপর নির্ভর না করে তুমি নিজেই নিজেকে আগামীর জন্য তৈরি করতে পারো।
-                    <br><br>
-                    <strong>চলো, গতানুগতিক মুখস্থবিদ্যা ছেড়ে প্রযুক্তির আসল ব্যবহারটা শিখি—আর একসাথে গড়ে তুলি আমাদের স্বপ্নের বাংলাদেশ!</strong>
-                </p>
+            <!-- Post 2 -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="avatar bg-orange"></div>
+                    <div class="user-info">
+                        <span class="user-name">Hablu Programmer</span>
+                        <span class="user-handle">@hablu · 5h</span>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <p>বাংলাদেশে টেক এডুকেশনকে সহজলভ্য করতে BAHANNO-র এই উদ্যোগ সত্যিই প্রশংসনীয়। সবাই HTML বেসিকটা শিখে ফেলো।</p>
+                </div>
+                <div class="post-actions">
+                    <button onclick="toggleLike(this)">❤️ 89</button>
+                    <button>💬 5</button>
+                    <button>🔗 Share</button>
+                </div>
             </div>
-        </div>
-    </section>
+        </main>
 
-    <!-- Footer -->
-    <footer id="enroll">
-        <div class="footer-content">
-            <p>&copy; 2026 Bahanno. Read • Learn • Build.</p>
-            <a href="#" class="footer-link">Submit Your Writing</a>
-        </div>
-    </footer>
+        <!-- Right Sidebar (Trends) -->
+        <aside class="sidebar-right">
+            <div class="trends-box">
+                <h3>Trends for you</h3>
+                <div class="trend-item">
+                    <span class="trend-category">Technology · Trending</span>
+                    <span class="trend-name">#AIinBangladesh</span>
+                    <span class="trend-tweets">1,245 posts</span>
+                </div>
+                <div class="trend-item">
+                    <span class="trend-category">Freelancing · Trending</span>
+                    <span class="trend-name">#EarnOnline</span>
+                    <span class="trend-tweets">850 posts</span>
+                </div>
+                <div class="trend-item">
+                    <span class="trend-category">Education · Trending</span>
+                    <span class="trend-name">#LearnToCode</span>
+                    <span class="trend-tweets">2,100 posts</span>
+                </div>
+            </div>
+        </aside>
+
+    </div>
 
     <script src="script.js"></script>
 </body>
