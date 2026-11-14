@@ -653,3 +653,42 @@ footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid rgba(255,
         padding: 1rem !important;
     }
 }
+
+/* =========================================
+   POLISH: Size, Spacing & Hover Glows
+   ========================================= */
+
+/* 1. Make TORONGO Title Smaller and Add Spacing */
+.torongo-title {
+    font-size: clamp(3.5rem, 12vw, 7.5rem) !important; /* Reduced size */
+}
+
+.torongo-hero {
+    padding-top: 10rem !important; /* Added gap from top nav */
+    min-height: 85vh !important; 
+}
+
+.title-divider {
+    margin: 1.5rem auto !important; /* Adjusting space around divider */
+}
+
+/* 2. ABOUT Button Hover Glow (Home Page) */
+.explore-btn:hover {
+    background: #fff !important;
+    color: #000 !important;
+    border-color: #fff !important;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.3) !important; /* White glow */
+    transform: translateY(-3px) scale(1.02) !important;
+}
+
+/* 3. BACK TO HOME Button Hover Glow (Torongo Page) */
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15) !important; /* Subtle glow */
+    color: #fff !important;
+}
+
+.back-btn:hover svg {
+    transform: translateX(-4px) !important; /* Arrow slides left */
+}
