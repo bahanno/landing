@@ -206,3 +206,60 @@ footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-
     .brand-name { margin-top: 2rem; }
     .hero-buttons { flex-direction: column; }
 }
+
+/* =========================================
+   BOTTOM NAVIGATION BAR
+   ========================================= */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: rgba(10, 11, 16, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    transition: all 0.3s ease;
+    width: 60px;
+}
+
+.nav-item svg {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.nav-item:hover, .nav-item.active {
+    color: var(--text-main);
+}
+
+.nav-item:hover svg {
+    transform: translateY(-2px);
+}
+
+.nav-item.active svg {
+    color: var(--text-main);
+}
+
+/* Add padding to bottom of feed so posts don't hide behind nav */
+.feed-section {
+    padding-bottom: 100px !important;
+}

@@ -225,3 +225,27 @@ if(postBtn) {
         }
     });
 }
+
+// Bottom Nav Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const navCreate = document.getElementById('nav-create');
+    const navChats = document.getElementById('nav-chats');
+
+    if(navCreate) {
+        navCreate.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => {
+                const textarea = document.getElementById('post-content');
+                if(textarea) textarea.focus();
+            }, 500);
+        });
+    }
+
+    if(navChats) {
+        navChats.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert("Chats feature is coming soon!");
+        });
+    }
+});
