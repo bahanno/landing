@@ -365,3 +365,147 @@ footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-
 .send-comment-btn:active {
     transform: scale(0.95);
 }
+
+/* =========================================
+   PREMIUM POST UI (Like Reference Image)
+   ========================================= */
+.post-card {
+    background: linear-gradient(180deg, #111218 0%, #0A0B10 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease;
+}
+.post-card:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Header */
+.post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 12px;
+}
+
+.post-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.post-user-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.name-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.name-row strong {
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.verified-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.post-time {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 2px;
+}
+
+.more-options {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+/* Hashtag Styling */
+.hashtag {
+    color: #f97316; /* Orange like reference */
+    font-weight: 500;
+    cursor: pointer;
+}
+.hashtag:hover {
+    text-decoration: underline;
+}
+
+/* Actions Row */
+.post-actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.stats-left {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.stat-item svg {
+    width: 18px;
+    height: 18px;
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.3s, transform 0.2s;
+}
+.action-btn:hover {
+    color: var(--text-main);
+    transform: scale(1.05);
+}
+.action-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* Liked State */
+.like-btn.liked {
+    color: #ef4444;
+}
+.like-btn.liked svg {
+    fill: #ef4444;
+    stroke: #ef4444;
+}
+
+.post-content {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
