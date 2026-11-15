@@ -8,25 +8,83 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <nav class="navbar">
         <div class="nav-container">
             <a href="feed.html" class="nav-logo">BAHANNO</a>
-        </div>
-    </nav>
-    <section class="feed-section">
-        <div class="container feed-layout">
-            <div class="profile-header" style="text-align:center; padding: 4rem 0;">
-                <img id="profile-avatar" src="" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 1rem; border: 2px solid rgba(255,255,255,0.1);">
-                <h2 id="profile-name" style="color: white; font-size: 2rem;">Loading...</h2>
-                <p id="profile-username" style="color: var(--text-muted); font-size: 1.1rem;">@username</p>
-                <a href="feed.html" class="primary-btn" style="margin-top: 2rem;">Back to Feed</a>
+            <div class="nav-links">
+                <a href="feed.html" class="nav-btn">Back to Feed</a>
             </div>
         </div>
+    </nav>
+
+    <section class="profile-section">
+        <div class="container profile-container">
+            
+            <!-- Cover & Avatar Area -->
+            <div class="profile-header">
+                <div class="cover-photo"></div>
+                <div class="profile-avatar-wrapper">
+                    <img id="profile-avatar" src="" class="profile-avatar-large">
+                </div>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="profile-info">
+                <h2 id="profile-name">Loading...</h2>
+                <p id="profile-username">@username</p>
+                
+                <div class="profile-stats">
+                    <div class="stat-box">
+                        <strong id="post-count">0</strong>
+                        <span>Posts</span>
+                    </div>
+                    <div class="stat-box">
+                        <strong>0</strong>
+                        <span>Followers</span>
+                    </div>
+                    <div class="stat-box">
+                        <strong>0</strong>
+                        <span>Following</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Posts -->
+            <div class="user-posts-section">
+                <h3 class="section-title-small">My Posts</h3>
+                <div id="user-posts-grid" class="user-posts-grid">
+                    <div class="loading-text">Loading posts...</div>
+                </div>
+            </div>
+
+        </div>
     </section>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <a href="feed.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="feed.html#create" class="nav-item" id="nav-create">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Create</span>
+        </a>
+        <a href="#" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Chats</span>
+        </a>
+        <a href="profile.html" class="nav-item active">
+            <img id="nav-profile-avatar" src="" class="nav-avatar-img">
+            <span>Profile</span>
+        </a>
+    </nav>
+
     <script type="module">
         import { app } from './firebase-config.js';
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -40,15 +98,66 @@
         }
 
         onAuthStateChanged(auth, async (user) => {
-            if(!user) window.location.href = "login.html";
+            if(!user) {
+                window.location.href = "login.html";
+                return;
+            }
+            
+            // Load User Info
             const userDoc = await getDoc(doc(db, "users", user.uid));
+            let displayName = user.email.split('@')[0];
+            let username = displayName;
+
             if(userDoc.exists()){
                 const data = userDoc.data();
-                document.getElementById('profile-name').innerText = data.displayName;
-                document.getElementById('profile-username').innerText = "@" + data.username;
-                document.getElementById('profile-avatar').src = generateAvatar(data.displayName || data.username);
+                displayName = data.displayName || displayName;
+                username = data.username || username;
             }
+
+            const avatarUrl = generateAvatar(displayName);
+            document.getElementById('profile-name').innerText = displayName;
+            document.getElementById('profile-username').innerText = "@" + username;
+            document.getElementById('profile-avatar').src = avatarUrl;
+            document.getElementById('nav-profile-avatar').src = avatarUrl;
+
+            // Load User Posts
+            loadUserPosts(user.uid);
         });
+
+        async function loadUserPosts(userId) {
+            const grid = document.getElementById('user-posts-grid');
+            const q = query(collection(db, "posts"), where("userId", "==", userId));
+            
+            try {
+                const snapshot = await getDocs(q);
+                document.getElementById('post-count').innerText = snapshot.size;
+                
+                grid.innerHTML = '';
+                if(snapshot.empty) {
+                    grid.innerHTML = '<div class="empty-text">You haven\'t posted anything yet.</div>';
+                    return;
+                }
+
+                // Convert to array and sort by date manually if needed, but firestore query with orderBy and where might need an index.
+                // For now, just render them.
+                snapshot.forEach(doc => {
+                    const post = doc.data();
+                    const postElement = document.createElement('div');
+                    postElement.className = 'user-post-thumb';
+                    
+                    if(post.images && post.images.length > 0) {
+                        postElement.innerHTML = `<img src="${post.images[0]}" alt="post">`;
+                    } else {
+                        postElement.innerHTML = `<div class="text-post-thumb">${post.content.substring(0, 30)}...</div>`;
+                    }
+                    grid.appendChild(postElement);
+                });
+
+            } catch(error) {
+                console.error("Error fetching posts:", error);
+                grid.innerHTML = '<div class="error-text">Error loading posts.</div>';
+            }
+        }
     </script>
 </body>
 </html>
