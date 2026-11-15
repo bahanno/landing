@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat — BAHANNO</title>
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="chats.html" class="nav-logo" style="font-size:1.2rem; display:flex; align-items:center; gap:10px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+                <span id="chat-header-name">Chat</span>
+            </a>
+        </div>
+    </nav>
+
+    <section class="chat-room-section">
+        <div class="chat-messages" id="chat-messages">
+            <div class="loading-text">Loading messages...</div>
+        </div>
+        
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off">
+            <button id="send-msg-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+        </div>
+    </section>
+
+    <script type="module">
+        import { app } from './firebase-config.js';
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const otherUid = urlParams.get('uid');
+        
+        let currentUid = null;
+        let chatId = null;
+        let otherName = "User";
+
+        const messagesContainer = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-msg-btn');
+        const headerName = document.getElementById('chat-header-name');
+
+        onAuthStateChanged(auth, async (user) => {
+            if(!user || !otherUid) { window.location.href = "chats.html"; return; }
+            currentUid = user.uid;
+            
+            // Generate Chat ID (Sort UIDs to ensure same ID from both sides)
+            chatId = [currentUid, otherUid].sort().join('_');
+
+            // Load other user's name
+            const otherDoc = await getDoc(doc(db, "users", otherUid));
+            if(otherDoc.exists()) {
+                otherName = otherDoc.data().displayName || otherDoc.data().username;
+                headerName.innerText = otherName;
+            }
+
+            loadMessages();
+        });
+
+        function loadMessages() {
+            const q = query(collection(db, "chats", chatId, "messages"), orderBy("createdAt", "asc"));
+            
+            onSnapshot(q, (snapshot) => {
+                messagesContainer.innerHTML = '';
+                
+                if(snapshot.empty) {
+                    messagesContainer.innerHTML = '<div class="empty-text">Say hi to start the conversation!</div>';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const msg = doc.data();
+                    const isMine = msg.senderId === currentUid;
+                    
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = `message-bubble ${isMine ? 'my-message' : 'their-message'}`;
+                    msgDiv.innerText = msg.text;
+                    messagesContainer.appendChild(msgDiv);
+                });
+                
+                // Auto-scroll to bottom
+                setTimeout(() => {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 100);
+            });
+        }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if(!text) return;
+            
+            chatInput.value = '';
+            
+            try {
+                // 1. Add message to subcollection
+                await addDoc(collection(db, "chats", chatId, "messages"), {
+                    text: text,
+                    senderId: currentUid,
+                    createdAt: serverTimestamp()
+                });
+
+                // 2. Update parent chat document (for inbox preview)
+                await setDoc(doc(db, "chats", chatId), {
+                    users: [currentUid, otherUid],
+                    lastMessage: text,
+                    updatedAt: serverTimestamp()
+                }, { merge: true });
+                
+            } catch (e) {
+                alert("Error sending message: " + e.message);
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>

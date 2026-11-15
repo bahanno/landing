@@ -45,7 +45,10 @@
                     <!-- Edit Profile (Own) -->
                     <button id="open-edit-btn" class="secondary-btn" style="display: none;">Edit Profile</button>
                     <!-- Follow/Unfollow (Others) -->
-                    <button id="follow-btn" class="primary-btn" style="display: none;">Follow</button>
+                    <div id="other-actions" style="display: none; gap: 10px; justify-content: center;">
+                        <button id="follow-btn" class="primary-btn">Follow</button>
+                        <a href="#" id="message-btn" class="secondary-btn" style="text-decoration: none;">Message</a>
+                    </div>
                 </div>
             </div>
 
@@ -193,7 +196,8 @@
                 followBtn.style.display = 'none';
             } else {
                 openEditBtn.style.display = 'none';
-                followBtn.style.display = 'inline-block';
+                document.getElementById('other-actions').style.display = 'flex';
+                document.getElementById('message-btn').href = 'chat-room.html?uid=' + profileUid;
                 
                 // Check if following
                 isFollowing = followers.includes(currentUid);
