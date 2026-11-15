@@ -263,3 +263,105 @@ footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-
 .feed-section {
     padding-bottom: 100px !important;
 }
+
+/* =========================================
+   LIKE & COMMENT STYLES
+   ========================================= */
+.post-actions-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.action-btn svg {
+    width: 20px;
+    height: 20px;
+    transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+/* Like Button Active State */
+.like-btn.liked {
+    color: #ef4444; /* Red */
+}
+.like-btn.liked svg {
+    fill: #ef4444;
+    stroke: #ef4444;
+}
+
+/* Comments Section */
+.comments-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed rgba(255,255,255,0.05);
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.comment-item {
+    font-size: 0.9rem;
+    color: var(--text-main);
+    background: rgba(255,255,255,0.03);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    width: fit-content;
+    max-width: 90%;
+}
+.comment-item strong {
+    color: var(--text-muted);
+    margin-right: 0.5rem;
+}
+
+.comment-input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.comment-input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50px;
+    padding: 0.6rem 1rem;
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+.comment-input:focus {
+    border-color: var(--text-muted);
+}
+
+.send-comment-btn {
+    background: var(--text-main);
+    color: var(--bg-color);
+    border: none;
+    padding: 0 1.2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.send-comment-btn:active {
+    transform: scale(0.95);
+}
