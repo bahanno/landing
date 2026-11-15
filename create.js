@@ -81,7 +81,7 @@ if(postBtn) {
     postBtn.addEventListener('click', async () => {
         const content = textarea.value.trim();
         if (selectedFiles.length === 0 && !content) return alert("Add images or write a caption!");
-        if (IMGBB_API_KEY === "e022a522bf0d1a4887e182d4aea38c17") return alert("Please set your ImgBB API key in create.js!");
+        if (IMGBB_API_KEY === "YOUR_IMGBB_API_KEY") return alert("Please set your ImgBB API key in create.js!");
 
         postBtn.innerText = "Posting...";
         postBtn.disabled = true;
