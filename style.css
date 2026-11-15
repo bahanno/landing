@@ -648,3 +648,19 @@ footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-
 }
 .generate-btn:hover { background: #059669; transform: translateY(-2px); }
 .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* =========================================
+   NAV AVATAR STYLE
+   ========================================= */
+.nav-avatar-img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: border-color 0.3s;
+}
+
+.nav-item.active .nav-avatar-img {
+    border-color: var(--text-main);
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile — BAHANNO</title>
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="feed.html" class="nav-logo">BAHANNO</a>
+        </div>
+    </nav>
+    <section class="feed-section">
+        <div class="container feed-layout">
+            <div class="profile-header" style="text-align:center; padding: 4rem 0;">
+                <img id="profile-avatar" src="" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 1rem;">
+                <h2 id="profile-name" style="color: white; font-size: 2rem;">Loading...</h2>
+                <p id="profile-username" style="color: var(--text-muted);">@username</p>
+                <a href="feed.html" class="primary-btn" style="margin-top: 2rem;">Back to Feed</a>
+            </div>
+        </div>
+    </section>
+    <script type="module">
+        import { app } from './firebase-config.js';
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        onAuthStateChanged(auth, async (user) => {
+            if(!user) window.location.href = "login.html";
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if(userDoc.exists()){
+                const data = userDoc.data();
+                document.getElementById('profile-name').innerText = data.displayName;
+                document.getElementById('profile-username').innerText = "@" + data.username;
+                document.getElementById('profile-avatar').src = `https://ui-avatars.com/api/?name=${data.displayName || data.username}&background=6366f1&color=fff&size=200`;
+            }
+        });
+    </script>
+</body>
+</html>

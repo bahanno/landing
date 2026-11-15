@@ -41,31 +41,32 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <span>Chats</span>
         </a>
+        <!-- New Profile Nav Item -->
+        <a href="profile.html" class="nav-item" id="nav-profile">
+            <img id="nav-profile-avatar" src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff" class="nav-avatar-img">
+            <span>Profile</span>
+        </a>
     </nav>
 
-    <!-- Create Post Modal (New Design) -->
+    <!-- Create Post Modal -->
     <div id="create-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" id="close-modal">&times;</button>
-            
             <div class="modal-header">
                 <h2>Create New Post</h2>
                 <p>Create amazing posts for your socials</p>
             </div>
-
             <div class="modal-body">
                 <div class="form-group">
                     <label>Brief description</label>
                     <textarea id="post-content" placeholder="Type something..." maxlength="280"></textarea>
                 </div>
-
                 <div class="form-row">
                     <div class="form-group half">
                         <label>Tone of voice</label>
                         <select class="custom-select">
                             <option>Casual</option>
                             <option>Professional</option>
-                            <option>Excited</option>
                         </select>
                     </div>
                     <div class="form-group half">
@@ -76,7 +77,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label>Add media</label>
                     <div class="drag-drop-area" id="drop-zone">
@@ -90,7 +90,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="modal-footer">
                 <button id="post-btn" class="generate-btn">Generate post</button>
             </div>
