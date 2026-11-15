@@ -1103,3 +1103,62 @@ footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-
 }
 #send-msg-btn:hover { transform: scale(1.05); }
 #send-msg-btn svg { width: 20px; height: 20px; margin-left: -3px; }
+
+/* =========================================
+   POST OPTIONS DROPDOWN
+   ========================================= */
+.post-options {
+    position: relative;
+}
+
+.more-options {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 10px;
+    transition: color 0.2s;
+}
+.more-options:hover {
+    color: var(--text-main);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #1C1D24;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    min-width: 150px;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.delete-btn {
+    color: #ef4444; /* Red */
+}
+.report-btn {
+    color: #facc15; /* Yellow */
+}
