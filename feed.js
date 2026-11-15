@@ -150,7 +150,7 @@ function loadPosts() {
             postElement.className = 'post-card';
             postElement.innerHTML = `
                 <div class="post-header">
-                    <strong>${post.authorEmail.split('@')[0]}</strong>
+                    <strong>@${post.authorUsername || post.authorEmail.split('@')[0]}</strong>
                     <span>${dateStr}</span>
                 </div>
                 ${mediaHtml}
