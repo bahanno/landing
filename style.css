@@ -811,3 +811,24 @@ footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-
     border-color: var(--text-main);
     transform: scale(1.1);
 }
+
+/* =========================================
+   EDIT PROFILE STYLES
+   ========================================= */
+.custom-input {
+    width: 100%;
+    background: #1C1D24;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    color: var(--text-main);
+    font-family: var(--font-body);
+    outline: none;
+    font-size: 1rem;
+}
+.custom-input:focus { border-color: rgba(255,255,255,0.2); }
+
+/* Cover photo gradient */
+.cover-photo {
+    background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%); /* Deep purple */
+}

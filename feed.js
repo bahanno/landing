@@ -128,9 +128,9 @@ function loadPosts() {
             postElement.dataset.id = postId;
             postElement.innerHTML = `
                 <div class="post-header">
-                    <img src="${avatarUrl}" alt="avatar" class="post-avatar">
+                    <a href="profile.html?uid=${post.userId}"><img src="${avatarUrl}" alt="avatar" class="post-avatar"></a>
                     <div class="post-user-info">
-                        <div class="name-row"><strong>@${authorName}</strong></div>
+                        <div class="name-row"><a href="profile.html?uid=${post.userId}" style="color:inherit;text-decoration:none;"><strong>@${authorName}</strong></a></div>
                         <span class="post-time">Posted recently</span>
                     </div>
                     <button class="more-options">⋮</button>

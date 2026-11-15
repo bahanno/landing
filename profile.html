@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile — BAHANNO</title>
+    <title>Profile — BAHANNO</title>
     <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -33,26 +33,23 @@
             <div class="profile-info">
                 <h2 id="profile-name">Loading...</h2>
                 <p id="profile-username">@username</p>
+                <p id="profile-bio" style="margin-bottom: 1.5rem; font-size: 0.95rem;"></p>
                 
                 <div class="profile-stats">
-                    <div class="stat-box">
-                        <strong id="post-count">0</strong>
-                        <span>Posts</span>
-                    </div>
-                    <div class="stat-box">
-                        <strong>0</strong>
-                        <span>Followers</span>
-                    </div>
-                    <div class="stat-box">
-                        <strong>0</strong>
-                        <span>Following</span>
-                    </div>
+                    <div class="stat-box"><strong id="post-count">0</strong><span>Posts</span></div>
+                    <div class="stat-box"><strong>0</strong><span>Followers</span></div>
+                    <div class="stat-box"><strong>0</strong><span>Following</span></div>
+                </div>
+
+                <!-- Edit Button (Only visible on own profile) -->
+                <div id="edit-profile-action" style="display: none; margin-top: 1.5rem;">
+                    <button id="open-edit-btn" class="secondary-btn">Edit Profile</button>
                 </div>
             </div>
 
             <!-- User Posts -->
             <div class="user-posts-section">
-                <h3 class="section-title-small">My Posts</h3>
+                <h3 class="section-title-small">Posts</h3>
                 <div id="user-posts-grid" class="user-posts-grid">
                     <div class="loading-text">Loading posts...</div>
                 </div>
@@ -61,13 +58,41 @@
         </div>
     </section>
 
+    <!-- Edit Profile Modal -->
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" id="close-edit-modal">&times;</button>
+            <div class="modal-header">
+                <h2>Edit Profile</h2>
+                <p>Update your personal information</p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Display Name</label>
+                    <input type="text" id="edit-name" class="custom-input" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea id="edit-bio" placeholder="Tell us about yourself..." maxlength="150"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Profile Picture</label>
+                    <input type="file" id="edit-image" accept="image/*" class="custom-input" style="padding: 10px;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-profile-btn" class="generate-btn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
         <a href="feed.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             <span>Home</span>
         </a>
-        <a href="feed.html#create" class="nav-item" id="nav-create">
+        <a href="feed.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span>Create</span>
         </a>
@@ -84,12 +109,23 @@
     <script type="module">
         import { app } from './firebase-config.js';
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const IMGBB_API_KEY = "e022a522bf0d1a4887e182d4aea38c17";
 
-        // Sleek SVG Avatar Generator
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetUid = urlParams.get('uid');
+        
+        let currentUid = null;
+        let profileUid = null;
+
+        const editModal = document.getElementById('edit-modal');
+        const openEditBtn = document.getElementById('open-edit-btn');
+        const closeEditModal = document.getElementById('close-edit-modal');
+        const saveProfileBtn = document.getElementById('save-profile-btn');
+
         function generateAvatar(name) {
             let initial = 'A';
             if (name && name.trim().length > 0) initial = name.trim().charAt(0).toUpperCase();
@@ -98,31 +134,48 @@
         }
 
         onAuthStateChanged(auth, async (user) => {
-            if(!user) {
-                window.location.href = "login.html";
+            if(!user) { window.location.href = "login.html"; return; }
+            currentUid = user.uid;
+            profileUid = targetUid || currentUid; // If no UID in URL, load own profile
+
+            // Load Nav Avatar (Always current user's)
+            const myDoc = await getDoc(doc(db, "users", currentUid));
+            let myName = user.email.split('@')[0];
+            if(myDoc.exists() && myDoc.data().displayName) myName = myDoc.data().displayName;
+            document.getElementById('nav-profile-avatar').src = myDoc.exists() && myDoc.data().photoURL ? myDoc.data().photoURL : generateAvatar(myName);
+
+            // Load Profile Data
+            await loadProfileData(profileUid);
+            
+            // Show Edit button only if viewing own profile
+            if (profileUid === currentUid) {
+                document.getElementById('edit-profile-action').style.display = 'block';
+            }
+        });
+
+        async function loadProfileData(uid) {
+            const userDoc = await getDoc(doc(db, "users", uid));
+            
+            if(!userDoc.exists()) {
+                document.getElementById('profile-name').innerText = "User not found";
                 return;
             }
-            
-            // Load User Info
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            let displayName = user.email.split('@')[0];
-            let username = displayName;
 
-            if(userDoc.exists()){
-                const data = userDoc.data();
-                displayName = data.displayName || displayName;
-                username = data.username || username;
-            }
+            const data = userDoc.data();
+            const displayName = data.displayName || "Bahanno User";
+            const avatarSrc = data.photoURL ? data.photoURL : generateAvatar(displayName);
 
-            const avatarUrl = generateAvatar(displayName);
             document.getElementById('profile-name').innerText = displayName;
-            document.getElementById('profile-username').innerText = "@" + username;
-            document.getElementById('profile-avatar').src = avatarUrl;
-            document.getElementById('nav-profile-avatar').src = avatarUrl;
+            document.getElementById('profile-username').innerText = "@" + (data.username || "user");
+            document.getElementById('profile-bio').innerText = data.bio || "No bio yet.";
+            document.getElementById('profile-avatar').src = avatarSrc;
 
-            // Load User Posts
-            loadUserPosts(user.uid);
-        });
+            // Populate edit form
+            document.getElementById('edit-name').value = displayName;
+            document.getElementById('edit-bio').value = data.bio || "";
+
+            loadUserPosts(uid);
+        }
 
         async function loadUserPosts(userId) {
             const grid = document.getElementById('user-posts-grid');
@@ -131,33 +184,66 @@
             try {
                 const snapshot = await getDocs(q);
                 document.getElementById('post-count').innerText = snapshot.size;
-                
                 grid.innerHTML = '';
+                
                 if(snapshot.empty) {
-                    grid.innerHTML = '<div class="empty-text">You haven\'t posted anything yet.</div>';
+                    grid.innerHTML = '<div class="empty-text">No posts yet.</div>';
                     return;
                 }
 
-                // Convert to array and sort by date manually if needed, but firestore query with orderBy and where might need an index.
-                // For now, just render them.
                 snapshot.forEach(doc => {
                     const post = doc.data();
-                    const postElement = document.createElement('div');
-                    postElement.className = 'user-post-thumb';
-                    
-                    if(post.images && post.images.length > 0) {
-                        postElement.innerHTML = `<img src="${post.images[0]}" alt="post">`;
-                    } else {
-                        postElement.innerHTML = `<div class="text-post-thumb">${post.content.substring(0, 30)}...</div>`;
-                    }
-                    grid.appendChild(postElement);
+                    const el = document.createElement('div');
+                    el.className = 'user-post-thumb';
+                    el.innerHTML = post.images && post.images.length > 0 
+                        ? `<img src="${post.images[0]}">` 
+                        : `<div class="text-post-thumb">${post.content.substring(0, 30)}...</div>`;
+                    grid.appendChild(el);
                 });
-
             } catch(error) {
-                console.error("Error fetching posts:", error);
                 grid.innerHTML = '<div class="error-text">Error loading posts.</div>';
             }
         }
+
+        // Edit Modal Logic
+        openEditBtn.addEventListener('click', () => editModal.classList.add('active'));
+        closeEditModal.addEventListener('click', () => editModal.classList.remove('active'));
+        editModal.addEventListener('click', (e) => { if(e.target === editModal) editModal.classList.remove('active'); });
+
+        saveProfileBtn.addEventListener('click', async () => {
+            const newName = document.getElementById('edit-name').value.trim();
+            const newBio = document.getElementById('edit-bio').value.trim();
+            const fileInput = document.getElementById('edit-image');
+            
+            if(!newName) return alert("Name cannot be empty.");
+            
+            saveProfileBtn.innerText = "Saving...";
+            saveProfileBtn.disabled = true;
+            
+            try {
+                let updates = { displayName: newName, bio: newBio };
+
+                // If user selected a new image
+                if(fileInput.files.length > 0) {
+                    const formData = new FormData();
+                    formData.append('image', fileInput.files[0]);
+                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                    const imgData = await res.json();
+                    if(imgData.success) {
+                        updates.photoURL = imgData.data.url;
+                    }
+                }
+
+                await updateDoc(doc(db, "users", currentUid), updates);
+                
+                // Reload page to reflect changes
+                window.location.reload();
+            } catch (error) {
+                alert("Error saving: " + error.message);
+                saveProfileBtn.innerText = "Save Changes";
+                saveProfileBtn.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>
