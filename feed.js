@@ -2,7 +2,7 @@ import { app } from './firebase-config.js';
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { 
     getFirestore, collection, onSnapshot, query, orderBy, initializeFirestore, 
-    doc, updateDoc, arrayUnion, arrayRemove, addDoc, serverTimestamp, getDocs 
+    doc, updateDoc, arrayUnion, arrayRemove, addDoc, serverTimestamp, getDocs, increment
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const auth = getAuth(app);
@@ -13,6 +13,7 @@ const IMGBB_API_KEY = "e022a522bf0d1a4887e182d4aea38c17";
 
 let currentUser = null;
 let selectedFiles = [];
+const viewedPosts = new Set(); // To prevent counting same post twice in one session
 
 const feedContainer = document.getElementById('feed-container');
 const userEmailSpan = document.getElementById('user-email');
@@ -42,77 +43,39 @@ if(logoutBtn) {
     });
 }
 
-// --- Modal Logic ---
-navCreate.addEventListener('click', (e) => {
-    e.preventDefault();
-    modal.classList.add('active');
-});
-
-closeModal.addEventListener('click', () => {
-    modal.classList.remove('active');
-});
-
-modal.addEventListener('click', (e) => {
-    if(e.target === modal) modal.classList.remove('active');
-});
-
-// --- Drag and Drop File Logic ---
-dropZone.addEventListener('click', () => imageInput.click());
-
-dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.style.borderColor = "var(--accent)";
-});
-
-dropZone.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    dropZone.style.borderColor = "#2C2D35";
-});
-
-dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.style.borderColor = "#2C2D35";
-    if(e.dataTransfer.files.length) {
-        handleFiles(e.dataTransfer.files);
-    }
-});
-
-imageInput.addEventListener('change', (e) => {
-    if(e.target.files.length) handleFiles(e.target.files);
-});
-
-function handleFiles(files) {
-    const type = document.getElementById('post-type').value;
-    const max = type === 'video' ? 3 : 5;
-    
-    if (files.length > max) {
-        alert(`Max ${max} images allowed for this post type.`);
-        return;
-    }
-    
-    selectedFiles = Array.from(files);
-    previewContainer.innerHTML = '';
-    previewContainer.style.display = 'flex';
-    
-    selectedFiles.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'preview-thumb';
-            previewContainer.appendChild(img);
-        };
-        reader.readAsDataURL(file);
+// --- Intersection Observer for 5s View Count ---
+const viewObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        const postId = entry.target.dataset.id;
+        
+        if (entry.isIntersecting) {
+            // Start timer if not already counted
+            entry.target.viewTimer = setTimeout(async () => {
+                if (!viewedPosts.has(postId)) {
+                    viewedPosts.add(postId); // Mark as viewed
+                    try {
+                        const postRef = doc(db, "posts", postId);
+                        // Increment view count in Firestore
+                        await updateDoc(postRef, { views: increment(1) });
+                    } catch (err) {
+                        console.log("View update error", err);
+                    }
+                }
+            }, 5000); // 5 seconds
+        } else {
+            // Clear timer if user scrolls away before 5s
+            if (entry.target.viewTimer) {
+                clearTimeout(entry.target.viewTimer);
+            }
+        }
     });
-}
+}, { threshold: 0.5 }); // Post must be 50% visible
 
-// --- Hashtag Parser ---
 function formatContent(text) {
     if (!text) return '';
     return text.replace(/(#\w+)/g, '<span class="hashtag">$1</span>');
 }
 
-// --- Load Posts ---
 function loadPosts() {
     if(!feedContainer) return;
     
@@ -133,7 +96,9 @@ function loadPosts() {
             const urls = post.images || [];
             const authorName = post.authorUsername || post.authorEmail.split('@')[0];
             const avatarUrl = `https://ui-avatars.com/api/?name=${authorName}&background=6366f1&color=fff`;
-            const viewsCount = Math.floor(Math.random() * 5000) + 100;
+            
+            // Real view count from firestore (default 0)
+            const viewsCount = post.views || 0;
 
             if (urls.length > 0) {
                 if (post.postType === 'video') {
@@ -164,13 +129,15 @@ function loadPosts() {
 
             const postElement = document.createElement('div');
             postElement.className = 'post-card';
+            postElement.dataset.id = postId; // Used for Observer
+            
             postElement.innerHTML = `
                 <div class="post-header">
                     <img src="${avatarUrl}" alt="avatar" class="post-avatar">
                     <div class="post-user-info">
                         <div class="name-row">
                             <strong>@${authorName}</strong>
-                            <svg class="verified-icon" viewBox="0 0 24 24" fill="#3b82f6"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <!-- Verified Badge Removed for now -->
                         </div>
                         <span class="post-time">Posted recently</span>
                     </div>
@@ -180,7 +147,10 @@ function loadPosts() {
                 ${mediaHtml}
                 <div class="post-actions-row">
                     <div class="stats-left">
-                        <span class="stat-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${viewsCount}</span>
+                        <span class="stat-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            ${viewsCount}
+                        </span>
                         <button class="action-btn like-btn ${likeClass}" data-id="${postId}">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                             <span class="like-count">${likes.length}</span>
@@ -202,18 +172,58 @@ function loadPosts() {
                 </div>
             `;
             feedContainer.appendChild(postElement);
+            viewObserver.observe(postElement); // Observe this post for 5s view
         });
         attachEventListeners();
     });
 }
 
-// --- Create Post Logic ---
+// --- Modal Logic ---
+navCreate.addEventListener('click', (e) => {
+    e.preventDefault();
+    modal.classList.add('active');
+});
+
+closeModal.addEventListener('click', () => modal.classList.remove('active'));
+modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('active'); });
+
+// --- Drag and Drop ---
+dropZone.addEventListener('click', () => imageInput.click());
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = "var(--accent)"; });
+dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.borderColor = "#2C2D35"; });
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault(); dropZone.style.borderColor = "#2C2D35";
+    if(e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+});
+imageInput.addEventListener('change', (e) => { if(e.target.files.length) handleFiles(e.target.files); });
+
+function handleFiles(files) {
+    const type = document.getElementById('post-type').value;
+    const max = type === 'video' ? 3 : 5;
+    if (files.length > max) return alert(`Max ${max} images allowed.`);
+    
+    selectedFiles = Array.from(files);
+    previewContainer.innerHTML = '';
+    previewContainer.style.display = 'flex';
+    
+    selectedFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'preview-thumb';
+            previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// --- Create Post ---
 postBtn.addEventListener('click', async () => {
     const content = document.getElementById('post-content').value.trim();
     const postType = document.getElementById('post-type').value;
 
     if (selectedFiles.length === 0 && !content) return alert("Add images or write a caption!");
-    
     postBtn.innerText = "Publishing...";
     postBtn.disabled = true;
     let uploadedUrls = [];
@@ -222,10 +232,7 @@ postBtn.addEventListener('click', async () => {
         for (let file of selectedFiles) {
             const formData = new FormData();
             formData.append('image', file);
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                method: 'POST',
-                body: formData
-            });
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
             const data = await res.json();
             if (data.success) uploadedUrls.push(data.data.url);
         }
@@ -236,16 +243,15 @@ postBtn.addEventListener('click', async () => {
             userId: currentUser.uid,
             postType: postType,
             images: uploadedUrls,
+            views: 0, // Initialize view count
             createdAt: serverTimestamp()
         });
 
-        // Reset and close modal
         document.getElementById('post-content').value = '';
         selectedFiles = [];
         previewContainer.innerHTML = '';
         previewContainer.style.display = 'none';
         modal.classList.remove('active');
-
     } catch (error) {
         alert("Error posting: " + error.message);
     } finally {
@@ -254,7 +260,7 @@ postBtn.addEventListener('click', async () => {
     }
 });
 
-// --- Event Listeners for Likes & Comments ---
+// --- Likes & Comments ---
 function attachEventListeners() {
     document.querySelectorAll('.like-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
