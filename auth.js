@@ -5,7 +5,8 @@ import {
     signInWithEmailAndPassword, 
     sendEmailVerification, 
     GoogleAuthProvider, 
-    signInWithPopup 
+    signInWithPopup,
+    updateProfile
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { 
     getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, serverTimestamp 
@@ -20,12 +21,19 @@ const submitBtn = document.getElementById('submit-btn');
 const toggleAuth = document.getElementById('toggle-auth');
 const authMessage = document.getElementById('auth-message');
 const authTitle = document.querySelector('.auth-title');
+const nameGroup = document.getElementById('name-group');
+const displayNameInput = document.getElementById('displayName');
 const usernameGroup = document.getElementById('username-group');
 const usernameInput = document.getElementById('username');
 const usernameStatus = document.getElementById('username-status');
 const googleBtn = document.getElementById('google-btn');
 
 let isUsernameAvailable = false;
+
+// Force Username to Lowercase
+usernameInput.addEventListener('input', (e) => {
+    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''); // Only allow a-z, 0-9, underscore
+});
 
 // Toggle Login/Signup Mode
 toggleAuth.addEventListener('click', (e) => {
@@ -36,24 +44,24 @@ toggleAuth.addEventListener('click', (e) => {
         authTitle.innerText = "Welcome Back";
         submitBtn.innerText = "Log In";
         toggleAuth.innerText = "Sign Up";
+        nameGroup.style.display = 'none';
         usernameGroup.style.display = 'none';
-        usernameInput.required = false;
     } else {
         authTitle.innerText = "Create an Account";
         submitBtn.innerText = "Sign Up";
         toggleAuth.innerText = "Log In";
+        nameGroup.style.display = 'block';
         usernameGroup.style.display = 'block';
-        usernameInput.required = true;
     }
     authMessage.style.display = 'none';
 });
 
 // Real-time Username Availability Check
 usernameInput.addEventListener('input', async (e) => {
-    const username = e.target.value.trim().toLowerCase();
+    const username = e.target.value.trim();
     if (username.length < 3) {
         usernameStatus.style.display = 'block';
-        usernameStatus.style.color = '#facc15'; // Yellow
+        usernameStatus.style.color = '#facc15'; 
         usernameStatus.innerText = "Min 3 characters required.";
         isUsernameAvailable = false;
         return;
@@ -67,11 +75,11 @@ usernameInput.addEventListener('input', async (e) => {
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-        usernameStatus.style.color = '#4ade80'; // Green
+        usernameStatus.style.color = '#4ade80'; 
         usernameStatus.innerText = "Username is available!";
         isUsernameAvailable = true;
     } else {
-        usernameStatus.style.color = '#f87171'; // Red
+        usernameStatus.style.color = '#f87171'; 
         usernameStatus.innerText = "Username is already taken.";
         isUsernameAvailable = false;
     }
@@ -82,9 +90,36 @@ authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const username = usernameInput.value.trim().toLowerCase();
+    
+    if (isLoginMode) {
+        submitBtn.innerText = "Processing...";
+        submitBtn.disabled = true;
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            window.location.href = "feed.html";
+        } catch (error) {
+            authMessage.style.display = 'block';
+            authMessage.style.color = "#f87171";
+            authMessage.innerText = error.message.replace("Firebase: ", "");
+        } finally {
+            submitBtn.innerText = "Log In";
+            submitBtn.disabled = false;
+        }
+        return;
+    }
 
-    if (!isLoginMode && !isUsernameAvailable) {
+    // Sign Up Logic
+    const displayName = displayNameInput.value.trim();
+    const username = usernameInput.value.trim();
+
+    if (!displayName) {
+        authMessage.style.display = 'block';
+        authMessage.style.color = "#f87171";
+        authMessage.innerText = "Please enter your Full Name.";
+        return;
+    }
+
+    if (!isUsernameAvailable) {
         authMessage.style.display = 'block';
         authMessage.style.color = "#f87171";
         authMessage.innerText = "Please choose a valid, available username.";
@@ -95,39 +130,33 @@ authForm.addEventListener('submit', async (e) => {
     submitBtn.disabled = true;
     authMessage.style.display = 'block';
     authMessage.style.color = "#facc15";
-    authMessage.innerText = "Connecting...";
+    authMessage.innerText = "Creating account...";
 
     try {
-        if (isLoginMode) {
-            await signInWithEmailAndPassword(auth, email, password);
-            window.location.href = "feed.html";
-        } else {
-            // Sign Up Process
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-            // Save Username to Firestore
-            await setDoc(doc(db, "users", user.uid), {
-                email: email,
-                username: username,
-                createdAt: serverTimestamp()
-            });
+        // Update Auth Profile
+        await updateProfile(user, { displayName: displayName });
 
-            // Send Verification Email
-            await sendEmailVerification(user);
+        // Save to Firestore
+        await setDoc(doc(db, "users", user.uid), {
+            email: email,
+            displayName: displayName,
+            username: username,
+            createdAt: serverTimestamp()
+        });
 
-            authMessage.style.color = "#4ade80";
-            authMessage.innerText = "Account created! Verification email sent. Please check your inbox.";
-            
-            setTimeout(() => {
-                toggleAuth.click(); // Switch to login
-            }, 4000);
-        }
+        await sendEmailVerification(user);
+
+        authMessage.style.color = "#4ade80";
+        authMessage.innerText = "Verification email sent! Please check inbox.";
+        setTimeout(() => toggleAuth.click(), 4000);
     } catch (error) {
         authMessage.style.color = "#f87171";
         authMessage.innerText = error.message.replace("Firebase: ", "");
     } finally {
-        submitBtn.innerText = isLoginMode ? "Log In" : "Sign Up";
+        submitBtn.innerText = "Sign Up";
         submitBtn.disabled = false;
     }
 });
@@ -135,34 +164,32 @@ authForm.addEventListener('submit', async (e) => {
 // Google Sign-In Logic
 googleBtn.addEventListener('click', async () => {
     const provider = new GoogleAuthProvider();
-    googleBtn.innerText = "Connecting...";
+    googleBtn.innerHTML = "Connecting...";
     googleBtn.disabled = true;
 
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
-        // Check if user already exists in Firestore
         const userDocRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userDocRef);
 
         if (!userDoc.exists()) {
-            // First time Google login: Generate a default username based on email
             let defaultUsername = user.email.split('@')[0].toLowerCase() + Math.floor(Math.random() * 1000);
             
             await setDoc(userDocRef, {
                 email: user.email,
+                displayName: user.displayName || "Bahanno User",
                 username: defaultUsername,
                 createdAt: serverTimestamp()
             });
         }
-
         window.location.href = "feed.html";
     } catch (error) {
         authMessage.style.display = 'block';
         authMessage.style.color = "#f87171";
         authMessage.innerText = error.message;
-        googleBtn.innerText = "Continue with Google";
+        googleBtn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" height="20" style="margin-right:10px;"> Continue with Google';
         googleBtn.disabled = false;
     }
 });
