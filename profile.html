@@ -20,8 +20,6 @@
 
     <section class="profile-section">
         <div class="container profile-container">
-            
-            <!-- Cover & Avatar Area -->
             <div class="profile-header">
                 <div class="cover-photo"></div>
                 <div class="profile-avatar-wrapper">
@@ -29,7 +27,6 @@
                 </div>
             </div>
 
-            <!-- Profile Info -->
             <div class="profile-info">
                 <h2 id="profile-name">Loading...</h2>
                 <p id="profile-username">@username</p>
@@ -37,54 +34,50 @@
                 
                 <div class="profile-stats">
                     <div class="stat-box"><strong id="post-count">0</strong><span>Posts</span></div>
-                    <div class="stat-box"><strong>0</strong><span>Followers</span></div>
-                    <div class="stat-box"><strong>0</strong><span>Following</span></div>
+                    <div class="stat-box"><strong id="follower-count">0</strong><span>Followers</span></div>
+                    <div class="stat-box"><strong id="following-count">0</strong><span>Following</span></div>
                 </div>
 
-                <div id="edit-profile-action" style="display: none; margin-top: 1.5rem;">
-                    <button id="open-edit-btn" class="secondary-btn">Edit Profile</button>
+                <div style="margin-top: 1.5rem;">
+                    <!-- Edit Profile (Own) -->
+                    <button id="open-edit-btn" class="secondary-btn" style="display: none;">Edit Profile</button>
+                    <!-- Follow/Unfollow (Others) -->
+                    <button id="follow-btn" class="primary-btn" style="display: none;">Follow</button>
                 </div>
             </div>
 
-            <!-- User Posts -->
             <div class="user-posts-section">
                 <h3 class="section-title-small">Posts</h3>
                 <div id="user-posts-grid" class="user-posts-grid">
                     <div class="loading-text">Loading posts...</div>
                 </div>
             </div>
-
         </div>
     </section>
 
-    <!-- Premium Edit Profile Modal -->
+    <!-- Edit Profile Modal -->
     <div id="edit-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" id="close-edit-modal">&times;</button>
-            
             <div class="modal-header" style="text-align: center;">
                 <h2>Edit Profile</h2>
                 <p>Update your personal information</p>
             </div>
-            
             <div class="modal-body">
-                <!-- Custom Avatar Uploader -->
                 <div class="avatar-upload-container">
                     <div class="avatar-preview-wrapper">
                         <img id="avatar-preview" src="" alt="Preview">
                         <label for="edit-image" class="camera-icon-overlay">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                         </label>
                     </div>
                     <input type="file" id="edit-image" accept="image/*" hidden>
                     <span class="upload-hint">Tap to change picture</span>
                 </div>
-
                 <div class="form-group">
                     <label>Display Name</label>
                     <input type="text" id="edit-name" class="custom-input" placeholder="John Doe" maxlength="30">
                 </div>
-
                 <div class="form-group">
                     <div class="label-row">
                         <label>Bio</label>
@@ -93,25 +86,28 @@
                     <textarea id="edit-bio" placeholder="Tell us about yourself..." maxlength="150"></textarea>
                 </div>
             </div>
-            
             <div class="modal-footer">
                 <button id="save-profile-btn" class="generate-btn">Save Changes</button>
             </div>
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Bottom Nav -->
     <nav class="bottom-nav">
         <a href="feed.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             <span>Home</span>
         </a>
+        <a href="search.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search</span>
+        </a>
         <a href="feed.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span>Create</span>
         </a>
         <a href="#" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <span>Chats</span>
         </a>
         <a href="profile.html" class="nav-item active">
@@ -123,11 +119,11 @@
     <script type="module">
         import { app } from './firebase-config.js';
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const IMGBB_API_KEY = "e022a522bf0d1a4887e182d4aea38c17"; // Ensure your API key is here
+        const IMGBB_API_KEY = "e022a522bf0d1a4887e182d4aea38c17"; 
 
         const urlParams = new URLSearchParams(window.location.search);
         const targetUid = urlParams.get('uid');
@@ -135,13 +131,13 @@
         let currentUid = null;
         let profileUid = null;
         let selectedFile = null;
+        let isFollowing = false;
 
+        const followBtn = document.getElementById('follow-btn');
         const editModal = document.getElementById('edit-modal');
         const openEditBtn = document.getElementById('open-edit-btn');
         const closeEditModal = document.getElementById('close-edit-modal');
         const saveProfileBtn = document.getElementById('save-profile-btn');
-        
-        // Modal Elements
         const avatarPreview = document.getElementById('avatar-preview');
         const editImageInput = document.getElementById('edit-image');
         const editNameInput = document.getElementById('edit-name');
@@ -166,10 +162,6 @@
             document.getElementById('nav-profile-avatar').src = myDoc.exists() && myDoc.data().photoURL ? myDoc.data().photoURL : generateAvatar(myName);
 
             await loadProfileData(profileUid);
-            
-            if (profileUid === currentUid) {
-                document.getElementById('edit-profile-action').style.display = 'block';
-            }
         });
 
         async function loadProfileData(uid) {
@@ -185,15 +177,70 @@
             document.getElementById('profile-bio').innerText = data.bio || "No bio yet.";
             document.getElementById('profile-avatar').src = avatarSrc;
 
-            // Populate edit modal
+            const followers = data.followers || [];
+            const following = data.following || [];
+            document.getElementById('follower-count').innerText = followers.length;
+            document.getElementById('following-count').innerText = following.length;
+
             editNameInput.value = displayName;
             editBioInput.value = data.bio || "";
             bioCount.innerText = `${editBioInput.value.length}/150`;
             avatarPreview.src = avatarSrc;
-            selectedFile = null; // reset on load
+            selectedFile = null;
+
+            if (uid === currentUid) {
+                openEditBtn.style.display = 'inline-block';
+                followBtn.style.display = 'none';
+            } else {
+                openEditBtn.style.display = 'none';
+                followBtn.style.display = 'inline-block';
+                
+                // Check if following
+                isFollowing = followers.includes(currentUid);
+                updateFollowBtnUI();
+            }
 
             loadUserPosts(uid);
         }
+
+        // Follow / Unfollow Logic
+        function updateFollowBtnUI() {
+            if(isFollowing) {
+                followBtn.innerText = "Following";
+                followBtn.style.background = "transparent";
+                followBtn.style.color = "var(--text-main)";
+                followBtn.style.border = "1px solid rgba(255,255,255,0.3)";
+            } else {
+                followBtn.innerText = "Follow";
+                followBtn.style.background = "var(--text-main)";
+                followBtn.style.color = "var(--bg-color)";
+                followBtn.style.border = "none";
+            }
+        }
+
+        followBtn.addEventListener('click', async () => {
+            followBtn.disabled = true;
+            const targetRef = doc(db, "users", profileUid);
+            const myRef = doc(db, "users", currentUid);
+
+            try {
+                if (isFollowing) {
+                    await updateDoc(targetRef, { followers: arrayRemove(currentUid) });
+                    await updateDoc(myRef, { following: arrayRemove(profileUid) });
+                    isFollowing = false;
+                } else {
+                    await updateDoc(targetRef, { followers: arrayUnion(currentUid) });
+                    await updateDoc(myRef, { following: arrayUnion(profileUid) });
+                    isFollowing = true;
+                }
+                updateFollowBtnUI();
+                loadProfileData(profileUid); // Reload counts
+            } catch(e) {
+                alert("Error updating follow status.");
+            } finally {
+                followBtn.disabled = false;
+            }
+        });
 
         async function loadUserPosts(userId) {
             const grid = document.getElementById('user-posts-grid');
@@ -202,10 +249,7 @@
                 const snapshot = await getDocs(q);
                 document.getElementById('post-count').innerText = snapshot.size;
                 grid.innerHTML = '';
-                if(snapshot.empty) {
-                    grid.innerHTML = '<div class="empty-text">No posts yet.</div>';
-                    return;
-                }
+                if(snapshot.empty) { grid.innerHTML = '<div class="empty-text">No posts yet.</div>'; return; }
                 snapshot.forEach(doc => {
                     const post = doc.data();
                     const el = document.createElement('div');
@@ -216,25 +260,19 @@
             } catch(error) { grid.innerHTML = '<div class="error-text">Error loading posts.</div>'; }
         }
 
-        // Modal Logic
+        // Edit Modal Logic
         openEditBtn.addEventListener('click', () => editModal.classList.add('active'));
         closeEditModal.addEventListener('click', () => editModal.classList.remove('active'));
         editModal.addEventListener('click', (e) => { if(e.target === editModal) editModal.classList.remove('active'); });
 
-        // Character counter for Bio
-        editBioInput.addEventListener('input', () => {
-            bioCount.innerText = `${editBioInput.value.length}/150`;
-        });
+        editBioInput.addEventListener('input', () => { bioCount.innerText = `${editBioInput.value.length}/150`; });
 
-        // Image Preview Logic
         editImageInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if(file) {
                 selectedFile = file;
                 const reader = new FileReader();
-                reader.onload = (e) => {
-                    avatarPreview.src = e.target.result;
-                };
+                reader.onload = (e) => { avatarPreview.src = e.target.result; };
                 reader.readAsDataURL(file);
             }
         });
@@ -242,30 +280,19 @@
         saveProfileBtn.addEventListener('click', async () => {
             const newName = editNameInput.value.trim();
             const newBio = editBioInput.value.trim();
-            
             if(!newName) return alert("Name cannot be empty.");
-            
-            saveProfileBtn.innerText = "Saving...";
-            saveProfileBtn.disabled = true;
-            
+            saveProfileBtn.innerText = "Saving..."; saveProfileBtn.disabled = true;
             try {
                 let updates = { displayName: newName, bio: newBio };
-
                 if(selectedFile) {
-                    const formData = new FormData();
-                    formData.append('image', selectedFile);
+                    const formData = new FormData(); formData.append('image', selectedFile);
                     const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
                     const imgData = await res.json();
                     if(imgData.success) updates.photoURL = imgData.data.url;
                 }
-
                 await updateDoc(doc(db, "users", currentUid), updates);
                 window.location.reload();
-            } catch (error) {
-                alert("Error saving: " + error.message);
-                saveProfileBtn.innerText = "Save Changes";
-                saveProfileBtn.disabled = false;
-            }
+            } catch (error) { alert("Error: " + error.message); saveProfileBtn.innerText = "Save Changes"; saveProfileBtn.disabled = false; }
         });
     </script>
 </body>
