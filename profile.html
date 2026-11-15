@@ -12,11 +12,12 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="feed.html" class="nav-logo">BAHANNO</a>
-            <div class="nav-links" style="display: flex; align-items: center;">
-                <a href="search.html" class="nav-icon-btn" style="color: var(--text-muted); text-decoration: none; margin-right: 1rem; display: flex; align-items: center; justify-content: center;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </a>
-                <a href="feed.html" class="nav-btn">Back to Feed</a>
+            <div class="nav-links" style="display: flex; align-items: center; gap: 15px;">
+                <a href="feed.html" class="nav-btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Back</a>
+                <!-- Settings Button -->
+                <button id="settings-btn" class="nav-icon-btn" style="background: transparent; border: none; cursor: pointer; color: var(--text-main);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
             </div>
         </div>
     </nav>
@@ -42,9 +43,7 @@
                 </div>
 
                 <div style="margin-top: 1.5rem;">
-                    <!-- Edit Profile (Own) -->
                     <button id="open-edit-btn" class="secondary-btn" style="display: none;">Edit Profile</button>
-                    <!-- Follow/Unfollow (Others) -->
                     <div id="other-actions" style="display: none; gap: 10px; justify-content: center;">
                         <button id="follow-btn" class="primary-btn">Follow</button>
                         <a href="#" id="message-btn" class="secondary-btn" style="text-decoration: none;">Message</a>
@@ -60,6 +59,20 @@
             </div>
         </div>
     </section>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 400px;">
+            <button class="close-modal" id="close-settings-modal">&times;</button>
+            <div class="modal-header" style="text-align: center;">
+                <h2>Settings</h2>
+                <p>Manage your account</p>
+            </div>
+            <div class="modal-body" style="padding: 2rem 0 1rem 0;">
+                <button id="logout-btn" class="dropdown-item" style="color: #ef4444; text-align: center; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; padding: 1rem; font-weight: 600; width: 100%;">Logout</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Edit Profile Modal -->
     <div id="edit-modal" class="modal-overlay">
@@ -98,18 +111,21 @@
         </div>
     </div>
 
-    <!-- Bottom Nav -->
+    <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
         <a href="feed.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             <span>Home</span>
         </a>
-        
+        <a href="search.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search</span>
+        </a>
         <a href="feed.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span>Create</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="chats.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <span>Chats</span>
         </a>
@@ -121,7 +137,7 @@
 
     <script type="module">
         import { app } from './firebase-config.js';
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         
         const auth = getAuth(app);
@@ -135,6 +151,22 @@
         let profileUid = null;
         let selectedFile = null;
         let isFollowing = false;
+
+        // Settings Modal
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsModal = document.getElementById('settings-modal');
+        const closeSettingsModal = document.getElementById('close-settings-modal');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        if(settingsBtn) {
+            settingsBtn.addEventListener('click', () => settingsModal.classList.add('active'));
+            closeSettingsModal.addEventListener('click', () => settingsModal.classList.remove('active'));
+            settingsModal.addEventListener('click', (e) => { if(e.target === settingsModal) settingsModal.classList.remove('active'); });
+            
+            logoutBtn.addEventListener('click', () => {
+                signOut(auth).then(() => { window.location.href = "index.html"; });
+            });
+        }
 
         const followBtn = document.getElementById('follow-btn');
         const editModal = document.getElementById('edit-modal');
@@ -193,13 +225,12 @@
 
             if (uid === currentUid) {
                 openEditBtn.style.display = 'inline-block';
-                followBtn.style.display = 'none';
+                document.getElementById('other-actions').style.display = 'none';
             } else {
                 openEditBtn.style.display = 'none';
                 document.getElementById('other-actions').style.display = 'flex';
                 document.getElementById('message-btn').href = 'chat-room.html?uid=' + profileUid;
                 
-                // Check if following
                 isFollowing = followers.includes(currentUid);
                 updateFollowBtnUI();
             }
@@ -207,7 +238,6 @@
             loadUserPosts(uid);
         }
 
-        // Follow / Unfollow Logic
         function updateFollowBtnUI() {
             if(isFollowing) {
                 followBtn.innerText = "Following";
@@ -238,7 +268,7 @@
                     isFollowing = true;
                 }
                 updateFollowBtnUI();
-                loadProfileData(profileUid); // Reload counts
+                loadProfileData(profileUid); 
             } catch(e) {
                 alert("Error updating follow status.");
             } finally {

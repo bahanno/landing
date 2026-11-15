@@ -1162,3 +1162,25 @@ footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-
 .report-btn {
     color: #facc15; /* Yellow */
 }
+
+/* =========================================
+   TOP NAV SETTINGS ICON
+   ========================================= */
+.nav-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.nav-icon-btn:hover {
+    transform: rotate(90deg);
+}
+
+.nav-icon-btn svg {
+    transition: stroke 0.3s ease;
+}
+
+.nav-icon-btn:hover svg {
+    stroke: #a1a1aa;
+}
