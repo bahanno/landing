@@ -41,7 +41,6 @@
                     <div class="stat-box"><strong>0</strong><span>Following</span></div>
                 </div>
 
-                <!-- Edit Button (Only visible on own profile) -->
                 <div id="edit-profile-action" style="display: none; margin-top: 1.5rem;">
                     <button id="open-edit-btn" class="secondary-btn">Edit Profile</button>
                 </div>
@@ -58,28 +57,43 @@
         </div>
     </section>
 
-    <!-- Edit Profile Modal -->
+    <!-- Premium Edit Profile Modal -->
     <div id="edit-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" id="close-edit-modal">&times;</button>
-            <div class="modal-header">
+            
+            <div class="modal-header" style="text-align: center;">
                 <h2>Edit Profile</h2>
                 <p>Update your personal information</p>
             </div>
+            
             <div class="modal-body">
+                <!-- Custom Avatar Uploader -->
+                <div class="avatar-upload-container">
+                    <div class="avatar-preview-wrapper">
+                        <img id="avatar-preview" src="" alt="Preview">
+                        <label for="edit-image" class="camera-icon-overlay">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                        </label>
+                    </div>
+                    <input type="file" id="edit-image" accept="image/*" hidden>
+                    <span class="upload-hint">Tap to change picture</span>
+                </div>
+
                 <div class="form-group">
                     <label>Display Name</label>
-                    <input type="text" id="edit-name" class="custom-input" placeholder="John Doe">
+                    <input type="text" id="edit-name" class="custom-input" placeholder="John Doe" maxlength="30">
                 </div>
+
                 <div class="form-group">
-                    <label>Bio</label>
+                    <div class="label-row">
+                        <label>Bio</label>
+                        <span id="bio-count">0/150</span>
+                    </div>
                     <textarea id="edit-bio" placeholder="Tell us about yourself..." maxlength="150"></textarea>
                 </div>
-                <div class="form-group">
-                    <label>Profile Picture</label>
-                    <input type="file" id="edit-image" accept="image/*" class="custom-input" style="padding: 10px;">
-                </div>
             </div>
+            
             <div class="modal-footer">
                 <button id="save-profile-btn" class="generate-btn">Save Changes</button>
             </div>
@@ -113,18 +127,26 @@
         
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const IMGBB_API_KEY = "e022a522bf0d1a4887e182d4aea38c17";
+        const IMGBB_API_KEY = "e022a522bf0d1a4887e182d4aea38c17"; // Ensure your API key is here
 
         const urlParams = new URLSearchParams(window.location.search);
         const targetUid = urlParams.get('uid');
         
         let currentUid = null;
         let profileUid = null;
+        let selectedFile = null;
 
         const editModal = document.getElementById('edit-modal');
         const openEditBtn = document.getElementById('open-edit-btn');
         const closeEditModal = document.getElementById('close-edit-modal');
         const saveProfileBtn = document.getElementById('save-profile-btn');
+        
+        // Modal Elements
+        const avatarPreview = document.getElementById('avatar-preview');
+        const editImageInput = document.getElementById('edit-image');
+        const editNameInput = document.getElementById('edit-name');
+        const editBioInput = document.getElementById('edit-bio');
+        const bioCount = document.getElementById('bio-count');
 
         function generateAvatar(name) {
             let initial = 'A';
@@ -136,18 +158,15 @@
         onAuthStateChanged(auth, async (user) => {
             if(!user) { window.location.href = "login.html"; return; }
             currentUid = user.uid;
-            profileUid = targetUid || currentUid; // If no UID in URL, load own profile
+            profileUid = targetUid || currentUid;
 
-            // Load Nav Avatar (Always current user's)
             const myDoc = await getDoc(doc(db, "users", currentUid));
             let myName = user.email.split('@')[0];
             if(myDoc.exists() && myDoc.data().displayName) myName = myDoc.data().displayName;
             document.getElementById('nav-profile-avatar').src = myDoc.exists() && myDoc.data().photoURL ? myDoc.data().photoURL : generateAvatar(myName);
 
-            // Load Profile Data
             await loadProfileData(profileUid);
             
-            // Show Edit button only if viewing own profile
             if (profileUid === currentUid) {
                 document.getElementById('edit-profile-action').style.display = 'block';
             }
@@ -155,11 +174,7 @@
 
         async function loadProfileData(uid) {
             const userDoc = await getDoc(doc(db, "users", uid));
-            
-            if(!userDoc.exists()) {
-                document.getElementById('profile-name').innerText = "User not found";
-                return;
-            }
+            if(!userDoc.exists()) return;
 
             const data = userDoc.data();
             const displayName = data.displayName || "Bahanno User";
@@ -170,9 +185,12 @@
             document.getElementById('profile-bio').innerText = data.bio || "No bio yet.";
             document.getElementById('profile-avatar').src = avatarSrc;
 
-            // Populate edit form
-            document.getElementById('edit-name').value = displayName;
-            document.getElementById('edit-bio').value = data.bio || "";
+            // Populate edit modal
+            editNameInput.value = displayName;
+            editBioInput.value = data.bio || "";
+            bioCount.innerText = `${editBioInput.value.length}/150`;
+            avatarPreview.src = avatarSrc;
+            selectedFile = null; // reset on load
 
             loadUserPosts(uid);
         }
@@ -180,40 +198,50 @@
         async function loadUserPosts(userId) {
             const grid = document.getElementById('user-posts-grid');
             const q = query(collection(db, "posts"), where("userId", "==", userId));
-            
             try {
                 const snapshot = await getDocs(q);
                 document.getElementById('post-count').innerText = snapshot.size;
                 grid.innerHTML = '';
-                
                 if(snapshot.empty) {
                     grid.innerHTML = '<div class="empty-text">No posts yet.</div>';
                     return;
                 }
-
                 snapshot.forEach(doc => {
                     const post = doc.data();
                     const el = document.createElement('div');
                     el.className = 'user-post-thumb';
-                    el.innerHTML = post.images && post.images.length > 0 
-                        ? `<img src="${post.images[0]}">` 
-                        : `<div class="text-post-thumb">${post.content.substring(0, 30)}...</div>`;
+                    el.innerHTML = post.images && post.images.length > 0 ? `<img src="${post.images[0]}">` : `<div class="text-post-thumb">${post.content.substring(0, 30)}...</div>`;
                     grid.appendChild(el);
                 });
-            } catch(error) {
-                grid.innerHTML = '<div class="error-text">Error loading posts.</div>';
-            }
+            } catch(error) { grid.innerHTML = '<div class="error-text">Error loading posts.</div>'; }
         }
 
-        // Edit Modal Logic
+        // Modal Logic
         openEditBtn.addEventListener('click', () => editModal.classList.add('active'));
         closeEditModal.addEventListener('click', () => editModal.classList.remove('active'));
         editModal.addEventListener('click', (e) => { if(e.target === editModal) editModal.classList.remove('active'); });
 
+        // Character counter for Bio
+        editBioInput.addEventListener('input', () => {
+            bioCount.innerText = `${editBioInput.value.length}/150`;
+        });
+
+        // Image Preview Logic
+        editImageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                selectedFile = file;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    avatarPreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         saveProfileBtn.addEventListener('click', async () => {
-            const newName = document.getElementById('edit-name').value.trim();
-            const newBio = document.getElementById('edit-bio').value.trim();
-            const fileInput = document.getElementById('edit-image');
+            const newName = editNameInput.value.trim();
+            const newBio = editBioInput.value.trim();
             
             if(!newName) return alert("Name cannot be empty.");
             
@@ -223,20 +251,15 @@
             try {
                 let updates = { displayName: newName, bio: newBio };
 
-                // If user selected a new image
-                if(fileInput.files.length > 0) {
+                if(selectedFile) {
                     const formData = new FormData();
-                    formData.append('image', fileInput.files[0]);
+                    formData.append('image', selectedFile);
                     const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
                     const imgData = await res.json();
-                    if(imgData.success) {
-                        updates.photoURL = imgData.data.url;
-                    }
+                    if(imgData.success) updates.photoURL = imgData.data.url;
                 }
 
                 await updateDoc(doc(db, "users", currentUid), updates);
-                
-                // Reload page to reflect changes
                 window.location.reload();
             } catch (error) {
                 alert("Error saving: " + error.message);
