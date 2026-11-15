@@ -1,6 +1,6 @@
 import { app } from './firebase-config.js';
 import { 
-    getAuth, 
+    getAuth, browserLocalPersistence, setPersistence, 
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
     sendEmailVerification, 
@@ -13,6 +13,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const auth = getAuth(app);
+setPersistence(auth, browserLocalPersistence);
 
 // Firestore কানেকশন স্ট্যাবল করতে Force Long Polling ব্যবহার
 const db = initializeFirestore(app, {
