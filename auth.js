@@ -9,11 +9,15 @@ import {
     updateProfile
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { 
-    getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, serverTimestamp 
+    getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, serverTimestamp, initializeFirestore 
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const auth = getAuth(app);
-const db = getFirestore(app);
+
+// Firestore কানেকশন স্ট্যাবল করতে Force Long Polling ব্যবহার
+const db = initializeFirestore(app, {
+    experimentalForceLongPolling: true
+});
 
 let isLoginMode = true;
 const authForm = document.getElementById('auth-form');
@@ -32,7 +36,7 @@ let isUsernameAvailable = false;
 
 // Force Username to Lowercase
 usernameInput.addEventListener('input', (e) => {
-    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''); // Only allow a-z, 0-9, underscore
+    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
 });
 
 // Toggle Login/Signup Mode
@@ -71,17 +75,23 @@ usernameInput.addEventListener('input', async (e) => {
     usernameStatus.style.color = 'var(--text-muted)';
     usernameStatus.innerText = "Checking...";
 
-    const q = query(collection(db, "users"), where("username", "==", username));
-    const querySnapshot = await getDocs(q);
+    try {
+        const q = query(collection(db, "users"), where("username", "==", username));
+        const querySnapshot = await getDocs(q);
 
-    if (querySnapshot.empty) {
-        usernameStatus.style.color = '#4ade80'; 
-        usernameStatus.innerText = "Username is available!";
-        isUsernameAvailable = true;
-    } else {
-        usernameStatus.style.color = '#f87171'; 
-        usernameStatus.innerText = "Username is already taken.";
-        isUsernameAvailable = false;
+        if (querySnapshot.empty) {
+            usernameStatus.style.color = '#4ade80'; 
+            usernameStatus.innerText = "Username is available!";
+            isUsernameAvailable = true;
+        } else {
+            usernameStatus.style.color = '#f87171'; 
+            usernameStatus.innerText = "Username is already taken.";
+            isUsernameAvailable = false;
+        }
+    } catch (error) {
+        console.error("Username check error:", error);
+        usernameStatus.style.color = '#f87171';
+        usernameStatus.innerText = "Error checking username. Check internet.";
     }
 });
 
