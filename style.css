@@ -979,3 +979,17 @@ footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-
     font-size: 0.8rem;
     cursor: pointer;
 }
+
+/* =========================================
+   TOP NAV SEARCH ICON STYLE
+   ========================================= */
+.nav-icon-btn svg {
+    width: 22px;
+    height: 22px;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.nav-icon-btn:hover svg {
+    color: var(--text-main) !important;
+    transform: scale(1.1);
+}
