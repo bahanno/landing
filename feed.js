@@ -13,6 +13,7 @@ let currentUser = null;
 let selectedFiles = [];
 const viewedPosts = new Set(); 
 
+// UI Elements
 const feedContainer = document.getElementById('feed-container');
 const userEmailSpan = document.getElementById('user-email');
 const logoutBtn = document.getElementById('logout-btn');
@@ -24,6 +25,26 @@ const dropZone = document.getElementById('drop-zone');
 const imageInput = document.getElementById('image-input');
 const previewContainer = document.getElementById('preview-container');
 const postBtn = document.getElementById('post-btn');
+
+// ==========================================
+// DEFAULT PROFESSIONAL SVG AVATAR GENERATOR
+// ==========================================
+function generateAvatar(name) {
+    let initial = 'A';
+    if (name && name.trim().length > 0) {
+        initial = name.trim().charAt(0).toUpperCase();
+    }
+    
+    // Sleek Dark Theme SVG
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <rect width="100" height="100" fill="#121317"/>
+        <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" 
+              font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-style="italic" 
+              font-size="60" fill="#FFFFFF">${initial}</text>
+    </svg>`;
+    
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -39,7 +60,7 @@ onAuthStateChanged(auth, async (user) => {
                 const data = userDoc.data();
                 name = data.displayName || data.username || name;
             }
-            avatarImg.src = `https://ui-avatars.com/api/?name=${name}&background=6366f1&color=fff`;
+            avatarImg.src = generateAvatar(name);
         }
 
         loadPosts();
@@ -48,11 +69,10 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// ... [বাকি ফাংশনগুলো আগের মতোই থাকবে, আমি শুধু পুরো ফাইলটা একসাথে দিচ্ছি] ...
-
 if(logoutBtn) {
     logoutBtn.addEventListener('click', () => { signOut(auth).then(() => window.location.href = "index.html"); });
 }
+
 const viewObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         const postId = entry.target.dataset.id;
@@ -83,8 +103,12 @@ function loadPosts() {
             let mediaHtml = '';
             const urls = post.images || [];
             const authorName = post.authorUsername || post.authorEmail.split('@')[0];
-            const avatarUrl = `https://ui-avatars.com/api/?name=${authorName}&background=6366f1&color=fff`;
+            
+            // Use the new SVG Avatar
+            const avatarUrl = generateAvatar(authorName); 
+            
             const viewsCount = post.views || 0;
+            
             if (urls.length > 0) {
                 if (post.postType === 'video') {
                     const slideId = `slideshow-${postId}`;
@@ -94,9 +118,11 @@ function loadPosts() {
                     mediaHtml = `<div class="swipe-carousel">${urls.map(url => `<img src="${url}" class="swipe-img">`).join('')}</div>`;
                 }
             }
+            
             const contentHtml = post.content ? `<div class="post-content">${formatContent(post.content)}</div>` : '';
             const likes = post.likes || [];
             const likeClass = likes.includes(currentUser.uid) ? 'liked' : '';
+            
             const postElement = document.createElement('div');
             postElement.className = 'post-card';
             postElement.dataset.id = postId;
