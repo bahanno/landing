@@ -8,6 +8,8 @@
   "background_color": "#0A0B10",
   "theme_color": "#0A0B10",
   "orientation": "portrait",
+  "categories": ["social", "communication", "news"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "icon-192.png",
@@ -36,6 +38,13 @@
       "type": "image/png",
       "form_factor": "narrow",
       "label": "User Profile"
+    },
+    {
+      "src": "screenshot-wide.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Desktop View"
     }
   ]
 }
