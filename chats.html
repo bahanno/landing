@@ -2,40 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chats — BAHANNO</title>
     <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0A0B10">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="BAHANNO">
-    
+    <meta name="theme-color" content="#000000">
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('SW registered!'))
-                .catch(err => console.log('SW registration failed', err));
-            });
+            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
         }
     </script>
-
 </head>
 <body>
+
     <nav class="navbar">
         <div class="nav-container">
             <a href="feed.html" class="nav-logo">BAHANNO</a>
+            <div class="nav-links" style="display: flex; align-items: center; gap: 15px;">
+                <button class="nav-icon-btn" style="background: transparent; border: none; color: var(--text-main);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </button>
+            </div>
         </div>
     </nav>
 
-    <section class="feed-section">
-        <div class="container feed-layout">
-            <div class="chat-header">
-                <h2 class="section-title-small">Messages</h2>
-            </div>
+    <section class="feed-section" style="padding-top: 80px; padding-bottom: 80px;">
+        <div class="container feed-layout" style="padding: 0;">
+            <h2 class="section-title-small" style="padding: 0 1rem; margin-bottom: 0.5rem;">Messages</h2>
             <div id="chat-list" class="chat-list">
                 <div class="loading-text">Loading chats...</div>
             </div>
@@ -48,11 +42,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             <span>Home</span>
         </a>
-        <a href="search.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <span>Search</span>
-        </a>
-        <a href="feed.html" class="nav-item">
+        <a href="#" class="nav-item" id="nav-create-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span>Create</span>
         </a>
@@ -93,19 +83,16 @@
 
         async function loadChats(currentUid) {
             const list = document.getElementById('chat-list');
-            
-            // Get chats where current user is one of the participants
             const q = query(collection(db, "chats"), where("users", "array-contains", currentUid));
             
             onSnapshot(q, async (snapshot) => {
                 list.innerHTML = '';
                 
                 if(snapshot.empty) {
-                    list.innerHTML = '<div class="empty-text">No messages yet. Go to a profile and tap Message!</div>';
+                    list.innerHTML = '<div class="empty-text" style="padding: 2rem;">No messages yet.<br>Go to a profile and tap Message!</div>';
                     return;
                 }
 
-                // Sort manually by updatedAt if needed (Firestore might require composite index for ordering with array-contains)
                 const chats = [];
                 snapshot.forEach(doc => chats.push({ id: doc.id, ...doc.data() }));
                 chats.sort((a, b) => (b.updatedAt?.toMillis() || 0) - (a.updatedAt?.toMillis() || 0));
@@ -123,6 +110,8 @@
                         otherAvatar = otherUserDoc.data().photoURL || generateAvatar(otherName);
                     }
 
+                    const dateStr = chat.updatedAt ? new Date(chat.updatedAt.toMillis()).toLocaleDateString([], {month:'short', day:'numeric'}) : '';
+
                     const el = document.createElement('a');
                     el.href = `chat-room.html?uid=${otherUid}`;
                     el.className = 'chat-list-item';
@@ -131,9 +120,9 @@
                         <div class="chat-info">
                             <div class="chat-name-row">
                                 <strong>${otherName}</strong>
-                                <span class="chat-time">${chat.updatedAt ? new Date(chat.updatedAt.toMillis()).toLocaleDateString() : ''}</span>
+                                <span class="chat-time">${dateStr}</span>
                             </div>
-                            <p class="chat-preview">${chat.lastMessage || 'Tap to chat'}</p>
+                            <p class="chat-preview">${chat.lastMessage || 'Tap to start chatting'}</p>
                         </div>
                     `;
                     list.appendChild(el);

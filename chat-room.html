@@ -2,36 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chat — BAHANNO</title>
     <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0A0B10">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="BAHANNO">
-    
+    <meta name="theme-color" content="#000000">
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('SW registered!'))
-                .catch(err => console.log('SW registration failed', err));
-            });
+            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
         }
     </script>
-
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="chats.html" class="nav-logo" style="font-size:1.2rem; display:flex; align-items:center; gap:10px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
-                <span id="chat-header-name">Chat</span>
+    <nav class="navbar" style="padding: 0.8rem 0;">
+        <div class="nav-container" style="justify-content: flex-start; gap: 15px;">
+            <a href="chats.html" style="color: var(--text-main); display: flex; align-items: center; text-decoration: none;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
             </a>
+            <img id="chat-header-avatar" src="" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+            <div style="display: flex; flex-direction: column;">
+                <strong id="chat-header-name" style="color: var(--text-main); font-size: 0.95rem; line-height: 1.2;">Chat</strong>
+                <span style="color: var(--text-muted); font-size: 0.75rem;">Active now</span>
+            </div>
         </div>
     </nav>
 
@@ -41,9 +35,9 @@
         </div>
         
         <div class="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off">
+            <input type="text" id="chat-input" placeholder="Message..." autocomplete="off">
             <button id="send-msg-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
             </button>
         </div>
     </section>
@@ -61,25 +55,30 @@
         
         let currentUid = null;
         let chatId = null;
-        let otherName = "User";
 
         const messagesContainer = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-msg-btn');
         const headerName = document.getElementById('chat-header-name');
+        const headerAvatar = document.getElementById('chat-header-avatar');
+
+        function generateAvatar(name) {
+            let initial = name ? name.trim().charAt(0).toUpperCase() : 'A';
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#121317"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-style="italic" font-size="60" fill="#FFFFFF">${initial}</text></svg>`;
+            return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+        }
 
         onAuthStateChanged(auth, async (user) => {
             if(!user || !otherUid) { window.location.href = "chats.html"; return; }
             currentUid = user.uid;
             
-            // Generate Chat ID (Sort UIDs to ensure same ID from both sides)
             chatId = [currentUid, otherUid].sort().join('_');
 
-            // Load other user's name
             const otherDoc = await getDoc(doc(db, "users", otherUid));
             if(otherDoc.exists()) {
-                otherName = otherDoc.data().displayName || otherDoc.data().username;
+                const otherName = otherDoc.data().displayName || otherDoc.data().username;
                 headerName.innerText = otherName;
+                headerAvatar.src = otherDoc.data().photoURL || generateAvatar(otherName);
             }
 
             loadMessages();
@@ -92,7 +91,7 @@
                 messagesContainer.innerHTML = '';
                 
                 if(snapshot.empty) {
-                    messagesContainer.innerHTML = '<div class="empty-text">Say hi to start the conversation!</div>';
+                    messagesContainer.innerHTML = '<div class="empty-text" style="margin:auto; font-size:0.9rem;">Send a message to start the conversation.</div>';
                     return;
                 }
 
@@ -107,9 +106,7 @@
                 });
                 
                 // Auto-scroll to bottom
-                setTimeout(() => {
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                }, 100);
+                setTimeout(() => { messagesContainer.scrollTop = messagesContainer.scrollHeight; }, 50);
             });
         }
 
@@ -120,14 +117,12 @@
             chatInput.value = '';
             
             try {
-                // 1. Add message to subcollection
                 await addDoc(collection(db, "chats", chatId, "messages"), {
                     text: text,
                     senderId: currentUid,
                     createdAt: serverTimestamp()
                 });
 
-                // 2. Update parent chat document (for inbox preview)
                 await setDoc(doc(db, "chats", chatId), {
                     users: [currentUid, otherUid],
                     lastMessage: text,
@@ -135,14 +130,12 @@
                 }, { merge: true });
                 
             } catch (e) {
-                alert("Error sending message: " + e.message);
+                console.error("Error sending message: ", e);
             }
         }
 
         sendBtn.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') sendMessage();
-        });
+        chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
     </script>
 </body>
 </html>

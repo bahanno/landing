@@ -1487,3 +1487,130 @@ body {
 }
 .skeleton-avatar { width: 38px; height: 38px; }
 .skeleton-image { border-radius: 8px; margin: 0 0.5rem; }
+
+/* =========================================
+   PREMIUM CHAT UI/UX (Seamless)
+   ========================================= */
+/* Chat List (Inbox) */
+.chat-list {
+    display: flex;
+    flex-direction: column;
+}
+.chat-list-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.chat-list-item:active {
+    background: rgba(255, 255, 255, 0.05);
+}
+.chat-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+}
+.chat-info { flex-grow: 1; }
+.chat-name-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.2rem;
+}
+.chat-name-row strong { color: var(--text-main); font-size: 1rem; font-weight: 600; }
+.chat-time { color: var(--text-muted); font-size: 0.8rem; }
+.chat-preview { 
+    color: var(--text-muted); font-size: 0.9rem; margin: 0; 
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; 
+}
+
+/* Chat Room */
+.chat-room-section {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full height */
+    padding-top: 60px; /* Navbar height */
+    padding-bottom: 70px; /* Input area height */
+    background: #000000;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+/* Message Bubbles */
+.message-bubble {
+    max-width: 75%;
+    padding: 0.7rem 1rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.my-message {
+    background: #ffffff;
+    color: #000000;
+    align-self: flex-end;
+    border-radius: 20px 20px 4px 20px; /* iMessage style */
+    font-weight: 500;
+}
+
+.their-message {
+    background: #262626;
+    color: #ffffff;
+    align-self: flex-start;
+    border-radius: 20px 20px 20px 4px; /* iMessage style */
+}
+
+/* Input Area Fixed at Bottom */
+.chat-input-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    padding: 0.8rem 1rem;
+    background: #000000;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: max(0.8rem, env(safe-area-inset-bottom)); /* iPhone notch support */
+    z-index: 1000;
+}
+
+#chat-input {
+    flex-grow: 1;
+    background: #1C1C1E;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 0.7rem 1.2rem;
+    color: var(--text-main);
+    font-family: var(--font-body);
+    outline: none;
+    font-size: 0.95rem;
+}
+#chat-input:focus {
+    border-color: rgba(255,255,255,0.3);
+}
+
+#send-msg-btn {
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+#send-msg-btn:active {
+    transform: scale(0.9);
+}
+#send-msg-btn svg { width: 20px; height: 20px; }
