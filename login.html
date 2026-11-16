@@ -15,6 +15,23 @@
         .google-btn:hover { background: #f0f0f0; }
         .username-status { font-size: 0.8rem; margin-top: 0.3rem; display: none; }
     </style>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0A0B10">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="BAHANNO">
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('SW registered!'))
+                .catch(err => console.log('SW registration failed', err));
+            });
+        }
+    </script>
+
 </head>
 <body>
     <nav class="navbar">

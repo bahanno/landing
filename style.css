@@ -1338,3 +1338,26 @@ footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-
     overflow: hidden;
     border-radius: 12px;
 }
+
+/* =========================================
+   NATIVE APP STYLE (PWA TOUCH)
+   ========================================= */
+html, body {
+    overscroll-behavior-y: none; /* Disable pull-to-refresh */
+    -webkit-tap-highlight-color: transparent; /* Remove blue highlight on tap */
+    touch-action: pan-y; /* Allow vertical scroll but prevent horizontal bounce */
+}
+
+/* Prevent text selection in UI elements to feel like an app */
+.navbar, .bottom-nav, .post-header, .post-actions-row, .modal-header, .chat-header {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* iOS Safe Area (For iPhone Notch) */
+.navbar {
+    padding-top: env(safe-area-inset-top) !important;
+}
+.bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+}
