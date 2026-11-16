@@ -1219,3 +1219,51 @@ footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-
 .action-btn.saved {
     color: #facc15;
 }
+
+/* =========================================
+   EXPLORE PAGE STYLES
+   ========================================= */
+.suggested-users-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.explore-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    margin-top: 1rem;
+}
+
+.explore-post-thumb {
+    aspect-ratio: 1 / 1;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #1C1D24;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    position: relative;
+}
+
+.explore-post-thumb:hover {
+    opacity: 0.8;
+}
+
+.explore-post-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.explore-post-thumb .text-post-thumb {
+    padding: 10px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-align: center;
+    font-weight: 500;
+}

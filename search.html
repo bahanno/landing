@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search — BAHANNO</title>
+    <title>Explore — BAHANNO</title>
     <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -17,14 +17,31 @@
 
     <section class="feed-section">
         <div class="container feed-layout">
+            <!-- Search Input -->
             <div class="search-container">
-                <h2 class="section-title-small">Explore</h2>
                 <input type="text" id="search-input" class="search-input" placeholder="Search by username...">
             </div>
             
-            <div id="search-results" class="search-results">
-                <div class="empty-text">Type a username to start searching.</div>
+            <!-- Search Results (Hidden by default) -->
+            <div id="search-results" class="search-results" style="display: none;">
+                <!-- Results go here -->
             </div>
+
+            <!-- Explore Content (Visible by default) -->
+            <div id="explore-content">
+                <!-- Suggested Users -->
+                <h3 class="section-title-small">Suggested for you</h3>
+                <div id="suggested-users" class="suggested-users-list">
+                    <div class="loading-text">Loading suggestions...</div>
+                </div>
+
+                <!-- Trending Posts -->
+                <h3 class="section-title-small" style="margin-top: 2rem;">Explore Posts</h3>
+                <div id="trending-posts" class="explore-grid">
+                    <div class="loading-text">Loading trending posts...</div>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -34,12 +51,15 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             <span>Home</span>
         </a>
-        
+        <a href="search.html" class="nav-item active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search</span>
+        </a>
         <a href="feed.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span>Create</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="chats.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <span>Chats</span>
         </a>
@@ -52,45 +72,59 @@
     <script type="module">
         import { app } from './firebase-config.js';
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs, doc, getDoc, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const auth = getAuth(app);
         const db = getFirestore(app);
+        
         const searchInput = document.getElementById('search-input');
-        const resultsContainer = document.getElementById('search-results');
+        const searchResults = document.getElementById('search-results');
+        const exploreContent = document.getElementById('explore-content');
+        const suggestedContainer = document.getElementById('suggested-users');
+        const trendingContainer = document.getElementById('trending-posts');
+
+        let currentUid = null;
 
         function generateAvatar(name) {
-            let initial = 'A';
-            if (name && name.trim().length > 0) initial = name.trim().charAt(0).toUpperCase();
+            let initial = name ? name.trim().charAt(0).toUpperCase() : 'A';
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#121317"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-style="italic" font-size="60" fill="#FFFFFF">${initial}</text></svg>`;
             return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
         }
 
         onAuthStateChanged(auth, async (user) => {
-            if(!user) window.location.href = "login.html";
+            if(!user) { window.location.href = "login.html"; return; }
+            currentUid = user.uid;
+
             const myDoc = await getDoc(doc(db, "users", user.uid));
             let myName = user.email.split('@')[0];
             if(myDoc.exists() && myDoc.data().displayName) myName = myDoc.data().displayName;
             document.getElementById('nav-profile-avatar').src = myDoc.exists() && myDoc.data().photoURL ? myDoc.data().photoURL : generateAvatar(myName);
+
+            // Load Explore Content
+            loadTrendingPosts();
+            loadSuggestedUsers();
         });
 
+        // --- Search Logic ---
         let debounceTimer;
         searchInput.addEventListener('input', (e) => {
             clearTimeout(debounceTimer);
             const searchTerm = e.target.value.trim().toLowerCase();
             
-            if(searchTerm.length < 2) {
-                resultsContainer.innerHTML = '<div class="empty-text">Type at least 2 characters.</div>';
+            if(searchTerm.length < 1) {
+                searchResults.style.display = 'none';
+                exploreContent.style.display = 'block';
                 return;
             }
+
+            searchResults.style.display = 'block';
+            exploreContent.style.display = 'none';
+            searchResults.innerHTML = '<div class="loading-text">Searching...</div>';
 
             debounceTimer = setTimeout(() => performSearch(searchTerm), 500);
         });
 
         async function performSearch(term) {
-            resultsContainer.innerHTML = '<div class="loading-text">Searching...</div>';
-            
-            // Search query: where username >= term and username <= term + '\uf8ff'
             const q = query(
                 collection(db, "users"), 
                 where("username", ">=", term),
@@ -99,14 +133,16 @@
 
             try {
                 const snapshot = await getDocs(q);
-                resultsContainer.innerHTML = '';
+                searchResults.innerHTML = '';
                 
                 if(snapshot.empty) {
-                    resultsContainer.innerHTML = '<div class="empty-text">No users found.</div>';
+                    searchResults.innerHTML = '<div class="empty-text">No users found.</div>';
                     return;
                 }
 
                 snapshot.forEach(docSnap => {
+                    if(docSnap.id === currentUid) return; // Don't show yourself in search
+                    
                     const data = docSnap.data();
                     const name = data.displayName || data.username;
                     const avatar = data.photoURL ? data.photoURL : generateAvatar(name);
@@ -122,11 +158,79 @@
                         </div>
                         <button class="follow-btn-small">View</button>
                     `;
-                    resultsContainer.appendChild(userEl);
+                    searchResults.appendChild(userEl);
                 });
             } catch (error) {
-                resultsContainer.innerHTML = `<div class="error-text">Error: ${error.message}</div>`;
+                searchResults.innerHTML = `<div class="error-text">Error: ${error.message}</div>`;
             }
+        }
+
+        // --- Explore Content Logic ---
+        async function loadTrendingPosts() {
+            try {
+                // Get top 12 posts by views
+                const q = query(collection(db, "posts"), orderBy("views", "desc"), limit(12));
+                const snapshot = await getDocs(q);
+                
+                trendingContainer.innerHTML = '';
+                if(snapshot.empty) {
+                    trendingContainer.innerHTML = '<div class="empty-text">No posts to explore yet.</div>';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const post = doc.data();
+                    const el = document.createElement('a');
+                    el.href = `post.html?id=${doc.id}`;
+                    el.className = 'explore-post-thumb';
+                    if(post.images && post.images.length > 0) {
+                        el.innerHTML = `<img src="${post.images[0]}">`;
+                    } else {
+                        el.innerHTML = `<div class="text-post-thumb">${post.content.substring(0, 40)}...</div>`;
+                    }
+                    trendingContainer.appendChild(el);
+                });
+            } catch(e) {
+                console.log("Error loading trending:", e);
+                // Fallback if index is missing, just fetch recent
+                trendingContainer.innerHTML = '<div class="error-text">Could not load explore posts.</div>';
+            }
+        }
+
+        async function loadSuggestedUsers() {
+            try {
+                const q = query(collection(db, "users"), limit(5));
+                const snapshot = await getDocs(q);
+                
+                suggestedContainer.innerHTML = '';
+                let count = 0;
+
+                snapshot.forEach(docSnap => {
+                    if(docSnap.id === currentUid || count >= 3) return; // Skip self, show max 3
+                    
+                    const data = docSnap.data();
+                    const name = data.displayName || data.username;
+                    const avatar = data.photoURL ? data.photoURL : generateAvatar(name);
+                    
+                    const userEl = document.createElement('a');
+                    userEl.href = `profile.html?uid=${docSnap.id}`;
+                    userEl.className = 'search-user-card';
+                    userEl.innerHTML = `
+                        <img src="${avatar}" class="search-avatar">
+                        <div class="search-user-info">
+                            <strong>${name}</strong>
+                            <span>@${data.username}</span>
+                        </div>
+                        <button class="follow-btn-small" style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.2);">View</button>
+                    `;
+                    suggestedContainer.appendChild(userEl);
+                    count++;
+                });
+
+                if(count === 0) {
+                    suggestedContainer.innerHTML = '<div class="empty-text" style="font-size:0.9rem;">No other users yet.</div>';
+                }
+            } catch(e) { console.log(e); }
         }
     </script>
 </body>
