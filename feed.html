@@ -2,27 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Feed — BAHANNO</title>
     <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0A0B10">
+    <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="BAHANNO">
-    
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('SW registered!'))
-                .catch(err => console.log('SW registration failed', err));
-            });
+            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
         }
     </script>
-
 </head>
 <body>
 
@@ -30,7 +22,7 @@
         <div class="nav-container">
             <a href="feed.html" class="nav-logo">BAHANNO</a>
             <div class="nav-links" style="display: flex; align-items: center; gap: 15px;">
-                <a href="search.html" class="nav-icon-btn" style="color: var(--text-muted); text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                <a href="search.html" class="nav-icon-btn" style="color: var(--text-main); text-decoration: none; display: flex; align-items: center; justify-content: center;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 </a>
             </div>
@@ -40,7 +32,7 @@
     <section class="feed-section">
         <div class="container feed-layout">
             <div id="feed-container" class="feed-container">
-                <div class="loading-text">Loading feed...</div>
+                <!-- Skeleton loaders will be injected here -->
             </div>
         </div>
     </section>
@@ -51,21 +43,13 @@
             <button class="close-modal" id="close-modal">&times;</button>
             <div class="modal-header">
                 <h2>Create New Post</h2>
-                <p>Create amazing posts for your socials</p>
+                <p>Share a moment with the world</p>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Brief description</label>
-                    <textarea id="post-content" placeholder="Type something..." maxlength="280"></textarea>
+                    <textarea id="post-content" placeholder="What's on your mind?..." maxlength="280"></textarea>
                 </div>
                 <div class="form-row">
-                    <div class="form-group half">
-                        <label>Tone of voice</label>
-                        <select class="custom-select">
-                            <option>Casual</option>
-                            <option>Professional</option>
-                        </select>
-                    </div>
                     <div class="form-group half">
                         <label>Post type</label>
                         <select id="post-type" class="custom-select">
@@ -75,33 +59,27 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Add media</label>
                     <div class="drag-drop-area" id="drop-zone">
                         <input type="file" id="image-input" accept="image/*" multiple hidden>
                         <div class="drop-content">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-                            <p>Choose a file or drag & drop it here</p>
-                            <span>Maximum size: 25MB</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            <p>Tap to select photos</p>
                         </div>
                         <div id="preview-container" class="preview-container"></div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="post-btn" class="generate-btn">Generate post</button>
+                <button id="post-btn" class="generate-btn">Publish Post</button>
             </div>
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Bottom Navigation Bar (No Search Here) -->
     <nav class="bottom-nav">
         <a href="feed.html" class="nav-item active">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             <span>Home</span>
-        </a>
-        <a href="search.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <span>Search</span>
         </a>
         <a href="#" class="nav-item" id="nav-create">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>

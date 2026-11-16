@@ -1361,3 +1361,129 @@ html, body {
 .bottom-nav {
     padding-bottom: env(safe-area-inset-bottom) !important;
 }
+
+/* =========================================
+   PREMIUM FEED UI/UX POLISH
+   ========================================= */
+body {
+    background-color: #000000; /* Pure Black for OLED */
+}
+
+/* Navbar adjustments */
+.navbar {
+    background: rgba(0, 0, 0, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.8rem 0; /* Slimmer navbar */
+}
+.nav-logo {
+    font-size: 1.6rem;
+}
+
+/* Feed Layout */
+.feed-section {
+    padding-top: 70px;
+    padding-bottom: 90px;
+}
+.feed-layout {
+    max-width: 500px; /* Tighter layout for mobile feel */
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+/* Post Cards */
+.post-card {
+    background: transparent; /* Seamless look */
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* Divider only */
+    border-radius: 0;
+    padding: 1rem 0;
+    margin-bottom: 0;
+    box-shadow: none;
+}
+
+/* Header inside post */
+.post-header {
+    padding: 0 0.5rem;
+    margin-bottom: 0.8rem;
+}
+.post-avatar {
+    width: 38px;
+    height: 38px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.name-row strong {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+.post-time {
+    font-size: 0.75rem;
+}
+
+/* Post Content */
+.post-content {
+    padding: 0 0.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 0.8rem;
+    color: #f3f4f6;
+}
+
+/* Media Wrapper */
+.post-media-wrapper {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin: 0 0.5rem;
+    position: relative;
+}
+.swipe-img, .carousel-container {
+    border-radius: 8px;
+}
+
+/* Actions Row */
+.post-actions-row {
+    padding: 0.8rem 0.5rem 0 0.5rem;
+    margin-top: 0.2rem;
+    border-top: none;
+}
+.action-btn {
+    color: #d1d5db;
+}
+.action-btn svg {
+    width: 24px;
+    height: 24px;
+}
+.action-btn:hover {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+/* Bottom Nav adjustments */
+.bottom-nav {
+    background: rgba(0, 0, 0, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    height: 65px;
+}
+.nav-item {
+    font-size: 0.7rem;
+    gap: 2px;
+}
+.nav-item svg {
+    width: 26px;
+    height: 26px;
+}
+.nav-item.active svg {
+    color: #ffffff;
+    fill: rgba(255, 255, 255, 0.1);
+}
+
+/* Skeleton tweaks for seamless look */
+.skeleton-card {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0;
+    padding: 1rem 0;
+}
+.skeleton-avatar { width: 38px; height: 38px; }
+.skeleton-image { border-radius: 8px; margin: 0 0.5rem; }
