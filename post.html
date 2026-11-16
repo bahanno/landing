@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post — BAHANNO</title>
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="feed.html" class="nav-logo" style="display: flex; align-items: center; gap: 10px; font-size: 1.2rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+                Post
+            </a>
+        </div>
+    </nav>
+
+    <section class="feed-section">
+        <div class="container feed-layout">
+            <div id="post-container">
+                <div class="loading-text">Loading post...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <a href="feed.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="search.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search</span>
+        </a>
+        <a href="feed.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Create</span>
+        </a>
+        <a href="chats.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Chats</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <img id="nav-profile-avatar" src="" class="nav-avatar-img">
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script type="module">
+        import { app } from './firebase-config.js';
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, orderBy, getDocs, updateDoc, arrayUnion, arrayRemove, addDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
+        const container = document.getElementById('post-container');
+        let currentUser = null;
+
+        function generateAvatar(name) {
+            let initial = name ? name.trim().charAt(0).toUpperCase() : 'A';
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#121317"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-style="italic" font-size="60" fill="#FFFFFF">${initial}</text></svg>`;
+            return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                const myDoc = await getDoc(doc(db, "users", user.uid));
+                let myName = user.email.split('@')[0];
+                if(myDoc.exists() && myDoc.data().displayName) myName = myDoc.data().displayName;
+                document.getElementById('nav-profile-avatar').src = myDoc.exists() && myDoc.data().photoURL ? myDoc.data().photoURL : generateAvatar(myName);
+
+                if (!postId) {
+                    container.innerHTML = '<div class="error-text">Post not found.</div>';
+                    return;
+                }
+                loadPost();
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        async function loadPost() {
+            try {
+                const postRef = doc(db, "posts", postId);
+                const postDoc = await getDoc(postRef);
+                
+                if (!postDoc.exists()) {
+                    container.innerHTML = '<div class="error-text">This post has been deleted or does not exist.</div>';
+                    return;
+                }
+
+                const post = postDoc.data();
+                const authorName = post.authorUsername || post.authorEmail.split('@')[0];
+                const avatarUrl = generateAvatar(authorName);
+                const viewsCount = post.views || 0;
+                
+                // Increment view count for the post
+                await updateDoc(postRef, { views: increment(1) }).catch(()=>{});
+
+                let mediaHtml = '';
+                const urls = post.images || [];
+                if (urls.length > 0) {
+                    mediaHtml = `<div class="swipe-carousel" style="flex-direction:column; overflow:visible;">${urls.map(url => `<img src="${url}" class="swipe-img" style="width:100%; margin-bottom:10px;">`).join('')}</div>`;
+                }
+
+                const likes = post.likes || [];
+                const likeClass = likes.includes(currentUser.uid) ? 'liked' : '';
+
+                container.innerHTML = `
+                    <div class="post-card" style="border:none; padding:0; box-shadow:none;">
+                        <div class="post-header">
+                            <a href="profile.html?uid=${post.userId}"><img src="${avatarUrl}" alt="avatar" class="post-avatar"></a>
+                            <div class="post-user-info">
+                                <div class="name-row"><a href="profile.html?uid=${post.userId}" style="color:inherit;text-decoration:none;"><strong>@${authorName}</strong></a></div>
+                                <span class="post-time">${post.createdAt ? new Date(post.createdAt.toMillis()).toLocaleString() : 'Recently'}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="post-content" style="font-size:1.2rem; margin-bottom:1.5rem;">${post.content ? post.content.replace(/(#\w+)/g, '<span class="hashtag">$1</span>') : ''}</div>
+                        ${mediaHtml}
+                        
+                        <div class="post-actions-row">
+                            <div class="stats-left">
+                                <span class="stat-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    ${viewsCount}
+                                </span>
+                                <button class="action-btn like-btn ${likeClass}" id="like-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                    <span id="like-count">${likes.length}</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="comments-section" style="display: block;">
+                            <div class="comments-list" id="comments-list">
+                                <div class="loading-text">Loading comments...</div>
+                            </div>
+                            <div class="comment-input-wrapper">
+                                <input type="text" id="comment-input" placeholder="Write a comment..." class="comment-input">
+                                <button id="send-comment-btn" class="send-comment-btn">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Event Listeners for single post
+                document.getElementById('like-btn').addEventListener('click', async () => {
+                    const btn = document.getElementById('like-btn');
+                    const isLiked = btn.classList.contains('liked');
+                    if (isLiked) {
+                        await updateDoc(postRef, { likes: arrayRemove(currentUser.uid) });
+                        btn.classList.remove('liked');
+                    } else {
+                        await updateDoc(postRef, { likes: arrayUnion(currentUser.uid) });
+                        btn.classList.add('liked');
+                    }
+                });
+
+                document.getElementById('send-comment-btn').addEventListener('click', async () => {
+                    const input = document.getElementById('comment-input');
+                    const text = input.value.trim();
+                    if (!text) return;
+                    try {
+                        await addDoc(collection(db, "posts", postId, "comments"), {
+                            text: text,
+                            userId: currentUser.uid,
+                            authorEmail: currentUser.email,
+                            createdAt: serverTimestamp()
+                        });
+                        input.value = '';
+                        loadComments();
+                    } catch (error) { alert(error.message); }
+                });
+
+                loadComments();
+            } catch (error) {
+                container.innerHTML = `<div class="error-text">Error loading post: ${error.message}</div>`;
+            }
+        }
+
+        async function loadComments() {
+            const list = document.getElementById('comments-list');
+            if(!list) return;
+            
+            const q = query(collection(db, "posts", postId, "comments"), orderBy("createdAt", "asc"));
+            const snapshot = await getDocs(q);
+            
+            list.innerHTML = '';
+            if(snapshot.empty) {
+                list.innerHTML = '<div class="empty-text" style="font-size:0.9rem;">No comments yet. Be the first!</div>';
+                return;
+            }
+            snapshot.forEach(doc => {
+                const c = doc.data();
+                const div = document.createElement('div');
+                div.className = 'comment-item';
+                div.innerHTML = `<strong>@${c.authorEmail.split('@')[0]}</strong> ${c.text}`;
+                list.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>

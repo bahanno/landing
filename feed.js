@@ -161,8 +161,10 @@ function loadPosts() {
                         <div class="dropdown-menu" id="dropdown-${postId}">${dropdownOptions}</div>
                     </div>
                 </div>
-                ${contentHtml}
-                ${mediaHtml}
+                <a href="post.html?id=${postId}" style="text-decoration:none; color:inherit; display:block;">
+                    ${contentHtml}
+                    ${mediaHtml}
+                </a>
                 <div class="post-actions-row">
                     <div class="stats-left">
                         <span class="stat-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${viewsCount}</span>
@@ -227,7 +229,7 @@ function attachEventListeners() {
     document.querySelectorAll('.share-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const postId = btn.dataset.id;
-            const shareUrl = `${window.location.origin}/post.html?id=${postId}`; // Future post page link
+            const shareUrl = `${window.location.origin}/post.html?id=${postId}`;
             
             if (navigator.share) {
                 try {
