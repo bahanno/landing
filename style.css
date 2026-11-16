@@ -1184,3 +1184,38 @@ footer { padding: 4rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-
 .nav-icon-btn:hover svg {
     stroke: #a1a1aa;
 }
+
+/* =========================================
+   SKELETON LOADING (Shimmer Effect)
+   ========================================= */
+.skeleton-card {
+    background: #111218;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.skeleton-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
+.skeleton-avatar { width: 45px; height: 45px; border-radius: 50%; background: #1C1D24; }
+.skeleton-text { height: 14px; background: #1C1D24; border-radius: 4px; margin-bottom: 8px; }
+.skeleton-image { width: 100%; height: 300px; background: #1C1D24; border-radius: 12px; margin-top: 1rem; }
+.skeleton-anim {
+    background: linear-gradient(90deg, #1C1D24 25%, #2A2C35 50%, #1C1D24 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* =========================================
+   SAVE & SHARE BUTTON STYLES
+   ========================================= */
+.action-btn.saved svg {
+    fill: #facc15; /* Yellow for bookmark */
+    stroke: #facc15;
+}
+.action-btn.saved {
+    color: #facc15;
+}

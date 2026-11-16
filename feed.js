@@ -11,10 +11,12 @@ const db = initializeFirestore(app, { experimentalForceLongPolling: true });
 const IMGBB_API_KEY = "e022a522bf0d1a4887e182d4aea38c17"; 
 
 let currentUser = null;
+let savedPosts = []; // Array to store saved post IDs
 let selectedFiles = [];
 const viewedPosts = new Set(); 
 
 const feedContainer = document.getElementById('feed-container');
+// ... (other UI elements remain the same)
 const userEmailSpan = document.getElementById('user-email');
 const logoutBtn = document.getElementById('logout-btn');
 const navCreate = document.getElementById('nav-create');
@@ -25,6 +27,29 @@ const dropZone = document.getElementById('drop-zone');
 const imageInput = document.getElementById('image-input');
 const previewContainer = document.getElementById('preview-container');
 const postBtn = document.getElementById('post-btn');
+
+// ==========================================
+// SKELETON LOADER UI
+// ==========================================
+function showSkeletons() {
+    feedContainer.innerHTML = '';
+    for(let i=0; i<3; i++) {
+        const skeleton = document.createElement('div');
+        skeleton.className = 'skeleton-card';
+        skeleton.innerHTML = `
+            <div class="skeleton-header">
+                <div class="skeleton-avatar skeleton-anim"></div>
+                <div style="flex-grow:1;">
+                    <div class="skeleton-text skeleton-anim" style="width: 40%;"></div>
+                    <div class="skeleton-text skeleton-anim" style="width: 20%; height: 10px;"></div>
+                </div>
+            </div>
+            <div class="skeleton-text skeleton-anim" style="width: 80%;"></div>
+            <div class="skeleton-image skeleton-anim"></div>
+        `;
+        feedContainer.appendChild(skeleton);
+    }
+}
 
 function generateAvatar(name) {
     let initial = 'A';
@@ -38,13 +63,20 @@ onAuthStateChanged(auth, async (user) => {
         currentUser = user;
         if(userEmailSpan) userEmailSpan.innerText = user.email.split('@')[0];
         
+        // Load Nav Avatar & Saved Posts
         const avatarImg = document.getElementById('nav-profile-avatar');
-        if(avatarImg) {
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            let name = user.email.split('@')[0];
-            if (userDoc.exists()) name = userDoc.data().displayName || userDoc.data().username || name;
-            avatarImg.src = generateAvatar(name);
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        
+        if(userDoc.exists()) {
+            const data = userDoc.data();
+            let name = data.displayName || user.email.split('@')[0];
+            if(avatarImg) avatarImg.src = data.photoURL || generateAvatar(name);
+            savedPosts = data.savedPosts || []; // Load bookmarks
+        } else {
+            if(avatarImg) avatarImg.src = generateAvatar(user.email.split('@')[0]);
         }
+
+        showSkeletons(); // Show loading UI
         loadPosts();
     } else {
         window.location.href = "login.html";
@@ -103,11 +135,15 @@ function loadPosts() {
             const likes = post.likes || [];
             const likeClass = likes.includes(currentUser.uid) ? 'liked' : '';
             
-            // Dropdown Menu Logic
+            // Dropdown Logic
             const isAuthor = post.userId === currentUser.uid;
             const dropdownOptions = isAuthor 
                 ? `<button class="dropdown-item delete-btn" data-id="${postId}">Delete Post</button>`
                 : `<button class="dropdown-item report-btn" data-id="${postId}">Report Post</button>`;
+
+            // Saved Logic
+            const isSaved = savedPosts.includes(postId);
+            const saveClass = isSaved ? 'saved' : '';
 
             const postElement = document.createElement('div');
             postElement.className = 'post-card';
@@ -117,16 +153,12 @@ function loadPosts() {
                 <div class="post-header">
                     <a href="profile.html?uid=${post.userId}"><img src="${avatarUrl}" alt="avatar" class="post-avatar"></a>
                     <div class="post-user-info">
-                        <div class="name-row">
-                            <a href="profile.html?uid=${post.userId}" style="color:inherit;text-decoration:none;"><strong>@${authorName}</strong></a>
-                        </div>
+                        <div class="name-row"><a href="profile.html?uid=${post.userId}" style="color:inherit;text-decoration:none;"><strong>@${authorName}</strong></a></div>
                         <span class="post-time">Posted recently</span>
                     </div>
                     <div class="post-options">
                         <button class="more-options" data-id="${postId}">⋮</button>
-                        <div class="dropdown-menu" id="dropdown-${postId}">
-                            ${dropdownOptions}
-                        </div>
+                        <div class="dropdown-menu" id="dropdown-${postId}">${dropdownOptions}</div>
                     </div>
                 </div>
                 ${contentHtml}
@@ -140,6 +172,14 @@ function loadPosts() {
                         </button>
                         <button class="action-btn comment-btn" data-id="${postId}">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                    </div>
+                    <div class="stats-right" style="display:flex; gap:1rem;">
+                        <button class="action-btn share-btn" data-id="${postId}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        </button>
+                        <button class="action-btn save-btn ${saveClass}" data-id="${postId}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
                         </button>
                     </div>
                 </div>
@@ -158,7 +198,6 @@ function loadPosts() {
     });
 }
 
-// Close all dropdowns when clicking anywhere else
 document.addEventListener('click', (e) => {
     if (!e.target.matches('.more-options')) {
         document.querySelectorAll('.dropdown-menu').forEach(menu => menu.style.display = 'none');
@@ -166,6 +205,45 @@ document.addEventListener('click', (e) => {
 });
 
 function attachEventListeners() {
+    // Save/Bookmark
+    document.querySelectorAll('.save-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const postId = btn.dataset.id;
+            const userRef = doc(db, "users", currentUser.uid);
+            
+            if (btn.classList.contains('saved')) {
+                await updateDoc(userRef, { savedPosts: arrayRemove(postId) });
+                btn.classList.remove('saved');
+                savedPosts = savedPosts.filter(id => id !== postId);
+            } else {
+                await updateDoc(userRef, { savedPosts: arrayUnion(postId) });
+                btn.classList.add('saved');
+                savedPosts.push(postId);
+            }
+        });
+    });
+
+    // Share Post
+    document.querySelectorAll('.share-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const postId = btn.dataset.id;
+            const shareUrl = `${window.location.origin}/post.html?id=${postId}`; // Future post page link
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Check out this post on BAHANNO',
+                        url: shareUrl
+                    });
+                } catch (err) { console.log('Share cancelled', err); }
+            } else {
+                // Fallback: Copy to clipboard
+                navigator.clipboard.writeText(shareUrl);
+                alert("Link copied to clipboard!");
+            }
+        });
+    });
+
     // Toggle Dropdown
     document.querySelectorAll('.more-options').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -173,7 +251,6 @@ function attachEventListeners() {
             const postId = btn.dataset.id;
             const menu = document.getElementById(`dropdown-${postId}`);
             const isVisible = menu.style.display === 'block';
-            
             document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
             menu.style.display = isVisible ? 'none' : 'block';
         });
@@ -183,12 +260,7 @@ function attachEventListeners() {
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             if(confirm("Are you sure you want to delete this post?")) {
-                const postId = btn.dataset.id;
-                try {
-                    await deleteDoc(doc(db, "posts", postId));
-                } catch (error) {
-                    alert("Error deleting post: " + error.message);
-                }
+                await deleteDoc(doc(db, "posts", btn.dataset.id));
             }
         });
     });
@@ -196,25 +268,19 @@ function attachEventListeners() {
     // Report Post
     document.querySelectorAll('.report-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
-            const postId = btn.dataset.id;
-            const reason = prompt("Why are you reporting this post? (e.g., Spam, Harassment, Inappropriate)");
+            const reason = prompt("Why are you reporting this post? (e.g., Spam, Harassment)");
             if(!reason) return;
-            
-            try {
-                await addDoc(collection(db, "reports"), {
-                    postId: postId,
-                    reportedBy: currentUser.uid,
-                    reason: reason,
-                    createdAt: serverTimestamp()
-                });
-                alert("Report submitted successfully. Our team will review it.");
-            } catch (error) {
-                alert("Error reporting post: " + error.message);
-            }
+            await addDoc(collection(db, "reports"), {
+                postId: btn.dataset.id,
+                reportedBy: currentUser.uid,
+                reason: reason,
+                createdAt: serverTimestamp()
+            });
+            alert("Report submitted.");
         });
     });
 
-    // Like Button
+    // Like
     document.querySelectorAll('.like-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const postId = btn.dataset.id; const postRef = doc(db, "posts", postId); const isLiked = btn.classList.contains('liked');
@@ -255,4 +321,46 @@ function startSlideshow(postId) {
     setInterval(() => { slides[currentIndex].classList.remove('active'); dots[currentIndex].classList.remove('active'); currentIndex = (currentIndex + 1) % slides.length; slides[currentIndex].classList.add('active'); dots[currentIndex].classList.add('active'); }, 3000);
 }
 
-navChats?.addEventListener('click', (e) => { e.preventDefault(); alert("Chats feature is coming soon!"); });
+// Modal Logic (Create Post)
+navCreate.addEventListener('click', (e) => { e.preventDefault(); modal.classList.add('active'); });
+closeModal.addEventListener('click', () => modal.classList.remove('active'));
+modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('active'); });
+dropZone.addEventListener('click', () => imageInput.click());
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = "var(--accent)"; });
+dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.borderColor = "#2C2D35"; });
+dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.style.borderColor = "#2C2D35"; if(e.dataTransfer.files.length) handleFiles(e.dataTransfer.files); });
+imageInput.addEventListener('change', (e) => { if(e.target.files.length) handleFiles(e.target.files); });
+
+function handleFiles(files) {
+    const max = document.getElementById('post-type').value === 'video' ? 3 : 5;
+    if (files.length > max) return alert(`Max ${max} images allowed.`);
+    selectedFiles = Array.from(files);
+    previewContainer.innerHTML = ''; previewContainer.style.display = 'flex';
+    selectedFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => { const img = document.createElement('img'); img.src = e.target.result; img.className = 'preview-thumb'; previewContainer.appendChild(img); };
+        reader.readAsDataURL(file);
+    });
+}
+
+postBtn.addEventListener('click', async () => {
+    const content = document.getElementById('post-content').value.trim();
+    const postType = document.getElementById('post-type').value;
+    if (selectedFiles.length === 0 && !content) return alert("Add images or write a caption!");
+    postBtn.innerText = "Publishing..."; postBtn.disabled = true; let uploadedUrls = [];
+    try {
+        for (let file of selectedFiles) {
+            const formData = new FormData(); formData.append('image', file);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+            const data = await res.json(); if (data.success) uploadedUrls.push(data.data.url);
+        }
+        await addDoc(collection(db, "posts"), { content, authorEmail: currentUser.email, userId: currentUser.uid, postType, images: uploadedUrls, views: 0, createdAt: serverTimestamp() });
+        document.getElementById('post-content').value = ''; selectedFiles = []; previewContainer.innerHTML = ''; previewContainer.style.display = 'none'; modal.classList.remove('active');
+    } catch (error) { alert("Error posting: " + error.message); } finally { postBtn.innerText = "Generate post"; postBtn.disabled = false; }
+});
+
+// Bottom Nav Logic
+document.getElementById('nav-chats').addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = "chats.html";
+});
