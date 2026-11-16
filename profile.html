@@ -14,7 +14,6 @@
             <a href="feed.html" class="nav-logo">BAHANNO</a>
             <div class="nav-links" style="display: flex; align-items: center; gap: 15px;">
                 <a href="feed.html" class="nav-btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Back</a>
-                <!-- Settings Button -->
                 <button id="settings-btn" class="nav-icon-btn" style="background: transparent; border: none; cursor: pointer; color: var(--text-main);">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                 </button>
@@ -51,8 +50,13 @@
                 </div>
             </div>
 
+            <!-- Profile Tabs -->
+            <div class="profile-tabs" id="profile-tabs" style="display: none; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
+                <button class="profile-tab active" id="tab-posts" style="flex:1; padding: 1rem; background:transparent; border:none; color:white; border-bottom: 2px solid white; font-weight:600; cursor:pointer;">My Posts</button>
+                <button class="profile-tab" id="tab-saved" style="flex:1; padding: 1rem; background:transparent; border:none; color:gray; border-bottom: 2px solid transparent; font-weight:600; cursor:pointer;">Saved</button>
+            </div>
+
             <div class="user-posts-section">
-                <h3 class="section-title-small">Posts</h3>
                 <div id="user-posts-grid" class="user-posts-grid">
                     <div class="loading-text">Loading posts...</div>
                 </div>
@@ -111,7 +115,7 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Bottom Nav -->
     <nav class="bottom-nav">
         <a href="feed.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -151,6 +155,7 @@
         let profileUid = null;
         let selectedFile = null;
         let isFollowing = false;
+        let userSavedPosts = [];
 
         // Settings Modal
         const settingsBtn = document.getElementById('settings-btn');
@@ -162,10 +167,7 @@
             settingsBtn.addEventListener('click', () => settingsModal.classList.add('active'));
             closeSettingsModal.addEventListener('click', () => settingsModal.classList.remove('active'));
             settingsModal.addEventListener('click', (e) => { if(e.target === settingsModal) settingsModal.classList.remove('active'); });
-            
-            logoutBtn.addEventListener('click', () => {
-                signOut(auth).then(() => { window.location.href = "index.html"; });
-            });
+            logoutBtn.addEventListener('click', () => { signOut(auth).then(() => { window.location.href = "index.html"; }); });
         }
 
         const followBtn = document.getElementById('follow-btn');
@@ -178,6 +180,11 @@
         const editNameInput = document.getElementById('edit-name');
         const editBioInput = document.getElementById('edit-bio');
         const bioCount = document.getElementById('bio-count');
+
+        // Tabs
+        const tabPosts = document.getElementById('tab-posts');
+        const tabSaved = document.getElementById('tab-saved');
+        const profileTabs = document.getElementById('profile-tabs');
 
         function generateAvatar(name) {
             let initial = 'A';
@@ -206,6 +213,7 @@
             const data = userDoc.data();
             const displayName = data.displayName || "Bahanno User";
             const avatarSrc = data.photoURL ? data.photoURL : generateAvatar(displayName);
+            userSavedPosts = data.savedPosts || [];
 
             document.getElementById('profile-name').innerText = displayName;
             document.getElementById('profile-username').innerText = "@" + (data.username || "user");
@@ -226,37 +234,71 @@
             if (uid === currentUid) {
                 openEditBtn.style.display = 'inline-block';
                 document.getElementById('other-actions').style.display = 'none';
+                profileTabs.style.display = 'flex'; // Show tabs for own profile
             } else {
                 openEditBtn.style.display = 'none';
                 document.getElementById('other-actions').style.display = 'flex';
                 document.getElementById('message-btn').href = 'chat-room.html?uid=' + profileUid;
+                profileTabs.style.display = 'none'; // Hide tabs for others
                 
                 isFollowing = followers.includes(currentUid);
                 updateFollowBtnUI();
             }
 
+            // Default load posts
+            tabPosts.style.color = "white";
+            tabPosts.style.borderBottom = "2px solid white";
+            tabSaved.style.color = "gray";
+            tabSaved.style.borderBottom = "2px solid transparent";
             loadUserPosts(uid);
+        }
+
+        // Tab Logic
+        tabPosts.addEventListener('click', () => {
+            tabPosts.style.color = "white"; tabPosts.style.borderBottom = "2px solid white";
+            tabSaved.style.color = "gray"; tabSaved.style.borderBottom = "2px solid transparent";
+            loadUserPosts(profileUid);
+        });
+
+        tabSaved.addEventListener('click', () => {
+            tabSaved.style.color = "white"; tabSaved.style.borderBottom = "2px solid white";
+            tabPosts.style.color = "gray"; tabPosts.style.borderBottom = "2px solid transparent";
+            loadSavedPosts();
+        });
+
+        async function loadSavedPosts() {
+            const grid = document.getElementById('user-posts-grid');
+            grid.innerHTML = '<div class="loading-text">Loading saved posts...</div>';
+            
+            if(userSavedPosts.length === 0) {
+                grid.innerHTML = '<div class="empty-text">No saved posts yet.</div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            for(const postId of userSavedPosts) {
+                const postDoc = await getDoc(doc(db, "posts", postId));
+                if(postDoc.exists()) {
+                    const post = postDoc.data();
+                    const el = document.createElement('div');
+                    el.className = 'user-post-thumb';
+                    el.innerHTML = post.images && post.images.length > 0 ? `<img src="${post.images[0]}">` : `<div class="text-post-thumb">${post.content.substring(0, 30)}...</div>`;
+                    grid.appendChild(el);
+                }
+            }
         }
 
         function updateFollowBtnUI() {
             if(isFollowing) {
-                followBtn.innerText = "Following";
-                followBtn.style.background = "transparent";
-                followBtn.style.color = "var(--text-main)";
-                followBtn.style.border = "1px solid rgba(255,255,255,0.3)";
+                followBtn.innerText = "Following"; followBtn.style.background = "transparent"; followBtn.style.color = "var(--text-main)"; followBtn.style.border = "1px solid rgba(255,255,255,0.3)";
             } else {
-                followBtn.innerText = "Follow";
-                followBtn.style.background = "var(--text-main)";
-                followBtn.style.color = "var(--bg-color)";
-                followBtn.style.border = "none";
+                followBtn.innerText = "Follow"; followBtn.style.background = "var(--text-main)"; followBtn.style.color = "var(--bg-color)"; followBtn.style.border = "none";
             }
         }
 
         followBtn.addEventListener('click', async () => {
             followBtn.disabled = true;
-            const targetRef = doc(db, "users", profileUid);
-            const myRef = doc(db, "users", currentUid);
-
+            const targetRef = doc(db, "users", profileUid); const myRef = doc(db, "users", currentUid);
             try {
                 if (isFollowing) {
                     await updateDoc(targetRef, { followers: arrayRemove(currentUid) });
@@ -267,13 +309,8 @@
                     await updateDoc(myRef, { following: arrayUnion(profileUid) });
                     isFollowing = true;
                 }
-                updateFollowBtnUI();
-                loadProfileData(profileUid); 
-            } catch(e) {
-                alert("Error updating follow status.");
-            } finally {
-                followBtn.disabled = false;
-            }
+                updateFollowBtnUI(); loadProfileData(profileUid); 
+            } catch(e) { alert("Error updating follow status."); } finally { followBtn.disabled = false; }
         });
 
         async function loadUserPosts(userId) {
@@ -294,13 +331,11 @@
             } catch(error) { grid.innerHTML = '<div class="error-text">Error loading posts.</div>'; }
         }
 
-        // Edit Modal Logic
+        // Edit Modal
         openEditBtn.addEventListener('click', () => editModal.classList.add('active'));
         closeEditModal.addEventListener('click', () => editModal.classList.remove('active'));
         editModal.addEventListener('click', (e) => { if(e.target === editModal) editModal.classList.remove('active'); });
-
         editBioInput.addEventListener('input', () => { bioCount.innerText = `${editBioInput.value.length}/150`; });
-
         editImageInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if(file) {
@@ -312,8 +347,7 @@
         });
 
         saveProfileBtn.addEventListener('click', async () => {
-            const newName = editNameInput.value.trim();
-            const newBio = editBioInput.value.trim();
+            const newName = editNameInput.value.trim(); const newBio = editBioInput.value.trim();
             if(!newName) return alert("Name cannot be empty.");
             saveProfileBtn.innerText = "Saving..."; saveProfileBtn.disabled = true;
             try {

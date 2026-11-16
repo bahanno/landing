@@ -11,13 +11,11 @@
 
     <nav class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo">BAHANNO</a>
-            <div class="nav-links" style="display: flex; align-items: center;">
-                <span id="user-email" style="color: var(--text-muted); font-size: 0.9rem;"></span>
-                <a href="search.html" class="nav-icon-btn" style="color: var(--text-muted); text-decoration: none; margin-right: 1rem; display: flex; align-items: center; justify-content: center;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </a>
-                <button id="logout-btn" class="nav-btn" style="cursor: pointer; border: none;">Logout</button>
+            <a href="feed.html" class="nav-logo">BAHANNO</a>
+            <div class="nav-links" style="display: flex; align-items: center; gap: 15px;">
+                <a href="search.html" class="nav-icon-btn" style="color: var(--text-muted); text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </a>
             </div>
         </div>
     </nav>
@@ -29,28 +27,6 @@
             </div>
         </div>
     </section>
-
-    <!-- Bottom Navigation Bar -->
-    <nav class="bottom-nav">
-        <a href="feed.html" class="nav-item active">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            <span>Home</span>
-        </a>
-        <a href="#" class="nav-item" id="nav-create">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <span>Create</span>
-        </a>
-        
-        <a href="chats.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            <span>Chats</span>
-        </a>
-        <!-- New Profile Nav Item -->
-        <a href="profile.html" class="nav-item" id="nav-profile">
-            <img id="nav-profile-avatar" src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff" class="nav-avatar-img">
-            <span>Profile</span>
-        </a>
-    </nav>
 
     <!-- Create Post Modal -->
     <div id="create-modal" class="modal-overlay">
@@ -99,6 +75,30 @@
             </div>
         </div>
     </div>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <a href="feed.html" class="nav-item active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="search.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search</span>
+        </a>
+        <a href="#" class="nav-item" id="nav-create">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Create</span>
+        </a>
+        <a href="chats.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Chats</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <img id="nav-profile-avatar" src="" class="nav-avatar-img">
+            <span>Profile</span>
+        </a>
+    </nav>
 
     <script type="module" src="feed.js"></script>
 </body>
